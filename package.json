@@ -1,0 +1,20 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "build": "node scripts/build.js"
+  },
+  "engines": {
+    "node": "16.16.0",
+    "pnpm": "7.5.1"
+  },
+  "dependencies": {
+    "classies": "^1.0.5",
+    "mithril": "2.2.2"
+  },
+  "devDependencies": {
+    "env-smart": "^2.3.0",
+    "esbuild": "0.14.28",
+    "servbot": "0.2.3"
+  }
+}
