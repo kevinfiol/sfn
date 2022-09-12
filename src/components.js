@@ -35,13 +35,13 @@ export const Card = () => ({
             onclick: profile.visible && onClick,
             className: cls({
                 '-staged': isStaged,
-                'clickable': profile.visible,
+                'clickable': onClick,
                 'opacity-50': !profile.visible
             })
         },
             showHeader &&
                 m('header.overflow-hidden',
-                    m('a.neutral', { href: profile.profileurl },
+                    m('a', { href: profile.profileurl },
                         profile.profileurl
                     )
                 )
@@ -59,13 +59,5 @@ export const Card = () => ({
                     m('span.pl-1', '✓')
                 ,
             )
-        )
-});
-
-export const Panel = () => ({
-    view: ({ attrs: { stagedCount } }) =>
-        m('div.panel',
-            m('div', stagedCount + ' friends selected'),
-            m('button', 'Compare Libraries')
         )
 });
