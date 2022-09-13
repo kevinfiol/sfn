@@ -307,11 +307,19 @@ div.container {
 }
 
 .category {
-    padding: var(--spacing-1);
-    display: grid;
-    grid-template-columns: 90% 10%;
+    display: flex;
     align-items: center;
     background-color: var(--light-bg-color);
+    overflow: hidden;
+}
+
+.category > label {
+    height: 100%;
+    width: 100%;
+    padding: var(--spacing-1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .category.-selected {

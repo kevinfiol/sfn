@@ -33,7 +33,7 @@ export function Apps({ attrs: { actions } }) {
     }
 
     return {
-        oninit: async ({ attrs: { state, ids } }) => {
+        oninit: async ({ attrs: { state, steamids } }) => {
             window.scroll(0, 0);
 
             if (state.staged) {
@@ -53,8 +53,8 @@ export function Apps({ attrs: { actions } }) {
             actions.setLoading(true);
 
             const [appsRes, profilesRes] = await Promise.all([
-                getCommonApps(ids),
-                getProfiles(ids)
+                getCommonApps(steamids),
+                getProfiles(steamids)
             ]);
 
             let resErr;
@@ -67,8 +67,6 @@ export function Apps({ attrs: { actions } }) {
                 profiles = profilesRes[0];
                 categories = Object.entries(common.categories);
                 filtered = [...common.apps];
-
-                console.log({common, profiles});
             }
 
             actions.setLoading(false);
@@ -118,19 +116,21 @@ export function Apps({ attrs: { actions } }) {
                     categories.map(([value, name]) => m('div.category', {
                         className: checkedCategories.includes(Number(value)) ? '-selected' : ''
                     },
-                        m('label.inline-block', { for: name }, name),
-                        m('input', {
-                            type: 'checkbox',
-                            id: name,
-                            value,
-                            checked: checkedCategories.includes(Number(value)),
-                            onchange: ({ target }) => {
-                                value = Number(value);
-                                if (target.checked) checkedCategories.push(value);
-                                else checkedCategories = checkedCategories.filter(c => c != value);
-                                applyFilter(state.apps, categoryFilter);
-                            }
-                        })
+                        m('label', { for: name },
+                            name,
+                            m('input', {
+                                type: 'checkbox',
+                                id: name,
+                                value,
+                                checked: checkedCategories.includes(Number(value)),
+                                onchange: ({ target }) => {
+                                    value = Number(value);
+                                    if (target.checked) checkedCategories.push(value);
+                                    else checkedCategories = checkedCategories.filter(c => c != value);
+                                    applyFilter(state.apps, categoryFilter);
+                                }
+                            })
+                        )
                     ))
                 )
             ),
@@ -170,8 +170,12 @@ export function Apps({ attrs: { actions } }) {
                                 )
                             )
                         )
-                    )
-                )
+                    ),
+                ),
+
+                !filtered.length && m('blockquote', {
+                    style: { marginBottom: '25rem', fontSize: '1.25em' }
+                }, 'No Apps Found.')
             )
         )
     };
