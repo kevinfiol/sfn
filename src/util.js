@@ -1,4 +1,6 @@
-export const SpinnerEl = (element, ms = 100) => {
+import { store } from 'vyce';
+
+export function SpinnerEl(element, ms = 100) {
     let el = element;
     let step = 0;
     let timer;
@@ -28,4 +30,45 @@ export const SpinnerEl = (element, ms = 100) => {
             clearInterval(timer);
         }
     };
-};
+}
+
+export function query(fetcher, initial, toFetch = true) {
+    const data = store(initial);
+    const error = store();
+    toFetch && fetcher().then(data.set).catch(error.set);
+    return { data, error };
+}
+
+
+
+// const getPerson = async () => {
+//   return m.request({ url: 'https://swapi.dev/api/people/1/' }).then(JSON.stringify);
+// };
+
+// const App = () => {
+//   let [content, error] = persons();
+  
+//   return {
+//     view: () =>
+//       m('div',
+//         'stuff',
+//         !error() && !content() && m('p', 'loading...'),
+//         error() && m('pre', 'an error occured'),
+//         content() && m('pre', content())
+//       )
+//   };
+// }
+
+// m.mount(document.body, App);
+
+// function persons() {
+//   const { data, error } = streamResponse(getPerson);
+//   return [data, error];
+// }
+
+// function streamResponse(fetcher) {
+//   const data = stream();
+//   const error = stream();
+//   fetcher().then(data).catch(error);
+//   return { data, error };
+// }

@@ -6,10 +6,12 @@ specifiers:
   esbuild: 0.14.28
   mithril: 2.2.2
   servbot: 0.2.3
+  vyce: ^0.7.0
 
 dependencies:
   classies: 1.0.5
   mithril: 2.2.2
+  vyce: 0.7.0
 
 devDependencies:
   env-smart: 2.3.0
@@ -310,6 +312,11 @@ packages:
     resolution: {integrity: sha512-T9ujX5Lgqqcb3wVJ7/XzP5ia04GZaeNrirI3NWWdjgiioNzzbtCvdkaozLS7Als4hpgJM1+JE8T8Cd7bQs9c0A==}
     engines: {node: '>=12.x', pnpm: 7.5.1}
     dev: true
+
+  /vyce/0.7.0:
+    resolution: {integrity: sha512-SdXs9NHA3xGxAc5lTATgvb/I7Vrlf2bDDgFfL5yqxoJXNY+MSG7iNpj57tDYc71Z/MEUltqWADqxlkAP+Nbcog==}
+    engines: {node: '>=12.x'}
+    dev: false
 
   /wrappy/1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
