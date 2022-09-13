@@ -34,6 +34,8 @@ export function Apps({ attrs: { actions } }) {
 
     return {
         oninit: async ({ attrs: { state, ids } }) => {
+            window.scroll(0, 0);
+
             if (state.staged) {
                 profiles = Object.values(state.staged);
             }
@@ -113,7 +115,9 @@ export function Apps({ attrs: { actions } }) {
                     }, 'Uncheck All')
                 ),
                 m('div.grid.columns-250.gap-1',
-                    categories.map(([value, name]) => m('div',
+                    categories.map(([value, name]) => m('div.category', {
+                        className: checkedCategories.includes(Number(value)) ? '-selected' : ''
+                    },
                         m('label.inline-block', { for: name }, name),
                         m('input', {
                             type: 'checkbox',
@@ -148,7 +152,7 @@ export function Apps({ attrs: { actions } }) {
                     filtered.map(a =>
                         m('div.card', { key: a.id },
                             m('div',
-                                m('a.neutral', { href: `https://store.steampowered.com/app/${a.steam_appid}` },
+                                m('a.-neutral', { href: `https://store.steampowered.com/app/${a.steam_appid}` },
                                     m('img.border', {
                                         loading: 'lazy',
                                         src: a.header_image

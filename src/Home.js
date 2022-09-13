@@ -77,6 +77,7 @@ export function Home({ attrs: { actions } }) {
                 m('div.panel',
                     m('div', (state.stagedCount - 1) + ' friends selected'),
                     m('button', {
+                        disabled: state.loading,
                         onclick: () => {
                             compareLibraries(state.idString)
                         }

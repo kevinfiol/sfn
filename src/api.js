@@ -12,7 +12,7 @@ export async function getFriends(steamid) {
         if (res.error) throw res.error;
         profiles = res.data[0];
     } catch (e) {
-        console.error(e);
+        console.error(e.message || e);
         error = 'Error: Unable to get friends.';
     }
 
@@ -28,7 +28,7 @@ export async function getProfiles(steamids) {
         if (res.error) throw res.error;
         profiles = res.data[0].profiles;
     } catch (e) {
-        console.error(e);
+        console.error(e.message || e);
         error = 'Error: Unable to get user profiles.';
     }
 
@@ -54,7 +54,7 @@ export async function getCommonApps(steamids) {
         common = appsRes.data[0];
         common.categories = catsRes.data[0];
     } catch (e) {
-        console.error(e);
+        console.error(e.message || e);
         error = 'Error: Unable to get user libraries & categories.'
     }
 
