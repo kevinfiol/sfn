@@ -32,10 +32,11 @@ export const Spinner = () => {
 export const Card = () => ({
     view: ({ attrs: { profile, onClick, isStaged, showHeader } }) =>
         m('div.card.max-width-3', {
+            title: !profile.visible ? 'This profile is private.' : undefined,
             onclick: profile.visible && onClick,
             className: cls({
                 '-staged': isStaged,
-                'clickable': onClick,
+                'clickable': profile.visible && onClick,
                 'opacity-50': !profile.visible
             })
         },
