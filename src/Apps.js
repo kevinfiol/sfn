@@ -5,9 +5,7 @@ import { queryProfiles, queryCommonApps } from './api';
 export function Apps({ attrs: { state, actions, steamids } }) {
     let textInput = '';
     const profiles = queryProfiles(Object.values(state.staged), steamids);
-    const apps = queryCommonApps(state.apps, steamids);
-
-    apps.data.sub(console.log);
+    // const apps = queryCommonApps(state.apps, steamids);
 
     // const categories = queryCategories(state.categoryMap);
     // const apps = queryApps(state.apps);
