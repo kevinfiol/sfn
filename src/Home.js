@@ -10,7 +10,7 @@ export function Home({ attrs: { actions } }) {
         actions.setProfiles({});
         actions.setLoading(true);
 
-        const [profiles, error] = await getFriends(steamid);
+        const [profiles, error] = await getFriends(steamid.trim());
         if (error) actions.setError(error);
         else actions.setProfiles(profiles);
 
