@@ -1,7 +1,58 @@
 import m from 'mithril';
+import { computed } from 'vyce';
+import { query } from './util';
 
 const API_URL = process.env.API_URL;
 const endpoint = (action) => `${API_URL}/${action}`;
+
+const makeFetcher = (url, params) => () => {
+    return m.request({ url, params }).then((res) => {
+        if (res.error) throw res.error;
+        return res.data[0];
+    });
+};
+
+export function queryProfiles(staged, steamids) {
+    const initial = (staged && staged.length) ? staged : null;
+    const fetcher = makeFetcher(endpoint('getProfiles'), { steamids });
+    const { error, loading, ...res } = query(fetcher, { initial });
+
+    // todo?: vyce computed properties should be *safe*
+    const data = computed([res.data], (data) => data && data.profiles);
+    return { data, error, loading };
+}
+
+export function queryCommonApps(apps, steamids) {
+    const initial = (apps && apps.length) ? apps : null;
+    const fetcher = makeFetcher(endpoint('getCommonApps'), { steamids });
+    return query(fetcher, { initial });
+}
+
+// function queryCommonApps(initial, steamids) {
+    // const toFetch = !initial.length;
+
+    // const { data, error } = query(
+    //     () => Promise.all([
+    //         m.request({ url: endpoint('getCategories') }),
+    //         m.request({ url: endpoint('getCommonApps'), params: { steamids } })
+    //     ]).then(([catsRes, appsRes]) => {
+    //         let err;
+
+    //         if (err = (catsRes.error || appsRes.error)) {
+    //             throw err;
+    //         }
+
+    //         const common = appsRes.data[0];
+    //         common.categories = catsRes.data[0];
+    //         return common;
+    //     }),
+    //     !toFetch ? initial : null,
+    //     toFetch
+    // );
+
+    // const loading = computed([data, error], (x, y) => !x && !y);
+    // return { data, error, loading };
+// }
 
 export async function getFriends(steamid) {
     let [profiles, error] = [{}, ''];

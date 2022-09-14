@@ -1,4 +1,4 @@
-import { store } from 'vyce';
+import { store, computed } from 'vyce';
 
 export function SpinnerEl(element, ms = 100) {
     let el = element;
@@ -32,11 +32,12 @@ export function SpinnerEl(element, ms = 100) {
     };
 }
 
-export function query(fetcher, initial, toFetch = true) {
+export function query(fetcher, { initial = undefined } = {}) {
     const data = store(initial);
     const error = store();
-    toFetch && fetcher().then(data.set).catch(error.set);
-    return { data, error };
+    const loading = computed([data, error], (d, e) => !d && !e);
+    !initial && fetcher().then(data.set).catch(error.set);
+    return { data, error, loading };
 }
 
 
