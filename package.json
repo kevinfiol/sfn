@@ -5,8 +5,8 @@
     "build": "node scripts/build.js"
   },
   "engines": {
-    "node": "16.16.0",
-    "pnpm": "7.5.1"
+    "node": "16.x",
+    "pnpm": "7.x"
   },
   "dependencies": {
     "classies": "^1.0.5",

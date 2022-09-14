@@ -14,9 +14,9 @@ function mount(root) {
                 m(Home, { state, actions })
         },
 
-        '/:ids': {
-            render: ({ attrs: { ids } }) =>
-                m(Apps, { state, actions, ids })
+        '/:steamids': {
+            render: ({ attrs: { steamids } }) =>
+                m(Apps, { state, actions, steamids })
         }
     });
 }
