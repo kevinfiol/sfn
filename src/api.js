@@ -1,30 +1,44 @@
 import m from 'mithril';
-import { computed } from 'vyce';
 import { query } from './util';
 
 const API_URL = process.env.API_URL;
 const endpoint = (action) => `${API_URL}/${action}`;
 
-const makeFetcher = (url, params) => () => {
+const makeFetcher = (action, params, chain) => () => {
+    const url = endpoint(action);
+
     return m.request({ url, params }).then((res) => {
         if (res.error) throw res.error;
         return res.data[0];
-    });
+    }).then(d =>
+        chain ? chain(d) : d
+    );
 };
 
 export function queryProfiles(staged, steamids) {
     const initial = (staged && staged.length) ? staged : null;
-    const fetcher = makeFetcher(endpoint('getProfiles'), { steamids });
-    const { error, loading, ...res } = query(fetcher, { initial });
-
-    // todo?: vyce computed properties should be *safe*
-    const data = computed([res.data], (data) => data && data.profiles);
-    return { data, error, loading };
+    const fetcher = makeFetcher('getProfiles', { steamids },
+        ({ profiles }) => profiles
+    );
+    return query(fetcher, { initial });
 }
 
-export function queryCommonApps(apps, steamids) {
+export function queryCommonApps(apps, steamids, oninit) {
     const initial = (apps && apps.length) ? apps : null;
-    const fetcher = makeFetcher(endpoint('getCommonApps'), { steamids });
+
+    const fetcher = makeFetcher('getCommonApps', { steamids },
+        ({ apps }) => {
+            oninit(apps);
+            return apps;
+        }
+    );
+
+    return query(fetcher, { initial });
+}
+
+export function queryCategories(categories) {
+    const initial = (categories && categories.length) ? categories : null;
+    const fetcher = makeFetcher('getCategories', {}, Object.entries);
     return query(fetcher, { initial });
 }
 

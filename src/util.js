@@ -32,12 +32,26 @@ export function SpinnerEl(element, ms = 100) {
     };
 }
 
+export function queryStore(initial) {
+    return {
+        val: initial,
+        err: undefined,
+        set data(v) { this.val = v; console.log(v); },
+        get data() { return this.val; },
+        set error(e) { this.err = e },
+        get error() { return this.err; },
+        get loading() { return !this.val && !this.err; }
+    };
+}
+
 export function query(fetcher, { initial = undefined } = {}) {
-    const data = store(initial);
-    const error = store();
-    const loading = computed([data, error], (d, e) => !d && !e);
-    !initial && fetcher().then(data.set).catch(error.set);
-    return { data, error, loading };
+    const store = queryStore(initial);
+
+    !initial && fetcher()
+        .then(d => store.data = d)
+        .catch(e => store.error = e);
+
+    return store;
 }
 
 
