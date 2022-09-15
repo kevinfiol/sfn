@@ -23,16 +23,11 @@ export function queryProfiles(staged, steamids) {
     return query(fetcher, { initial });
 }
 
-export function queryCommonApps(apps, steamids, oninit) {
+export function queryCommonApps(apps, steamids) {
     const initial = (apps && apps.length) ? apps : null;
-
     const fetcher = makeFetcher('getCommonApps', { steamids },
-        ({ apps }) => {
-            oninit(apps);
-            return apps;
-        }
+        ({ apps }) => apps
     );
-
     return query(fetcher, { initial });
 }
 
@@ -41,32 +36,6 @@ export function queryCategories(categories) {
     const fetcher = makeFetcher('getCategories', {}, Object.entries);
     return query(fetcher, { initial });
 }
-
-// function queryCommonApps(initial, steamids) {
-    // const toFetch = !initial.length;
-
-    // const { data, error } = query(
-    //     () => Promise.all([
-    //         m.request({ url: endpoint('getCategories') }),
-    //         m.request({ url: endpoint('getCommonApps'), params: { steamids } })
-    //     ]).then(([catsRes, appsRes]) => {
-    //         let err;
-
-    //         if (err = (catsRes.error || appsRes.error)) {
-    //             throw err;
-    //         }
-
-    //         const common = appsRes.data[0];
-    //         common.categories = catsRes.data[0];
-    //         return common;
-    //     }),
-    //     !toFetch ? initial : null,
-    //     toFetch
-    // );
-
-    // const loading = computed([data, error], (x, y) => !x && !y);
-    // return { data, error, loading };
-// }
 
 export async function getFriends(steamid) {
     let [profiles, error] = [{}, ''];

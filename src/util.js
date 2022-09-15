@@ -32,58 +32,14 @@ export function SpinnerEl(element, ms = 100) {
     };
 }
 
-export function queryStore(initial) {
-    return {
-        val: initial,
-        err: undefined,
-        set data(v) { this.val = v; console.log(v); },
-        get data() { return this.val; },
-        set error(e) { this.err = e },
-        get error() { return this.err; },
-        get loading() { return !this.val && !this.err; }
-    };
-}
-
 export function query(fetcher, { initial = undefined } = {}) {
-    const store = queryStore(initial);
+    const data = store(initial);
+    const error = store();
+    const loading = computed([data, error], (d, e) => !d && !e);
 
     !initial && fetcher()
-        .then(d => store.data = d)
-        .catch(e => store.error = e);
+        .then(data)
+        .catch(error);
 
-    return store;
+    return { data, error, loading };
 }
-
-
-
-// const getPerson = async () => {
-//   return m.request({ url: 'https://swapi.dev/api/people/1/' }).then(JSON.stringify);
-// };
-
-// const App = () => {
-//   let [content, error] = persons();
-  
-//   return {
-//     view: () =>
-//       m('div',
-//         'stuff',
-//         !error() && !content() && m('p', 'loading...'),
-//         error() && m('pre', 'an error occured'),
-//         content() && m('pre', content())
-//       )
-//   };
-// }
-
-// m.mount(document.body, App);
-
-// function persons() {
-//   const { data, error } = streamResponse(getPerson);
-//   return [data, error];
-// }
-
-// function streamResponse(fetcher) {
-//   const data = stream();
-//   const error = stream();
-//   fetcher().then(data).catch(error);
-//   return { data, error };
-// }
