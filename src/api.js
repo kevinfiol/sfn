@@ -4,93 +4,49 @@ import { query } from './util';
 const API_URL = process.env.API_URL;
 const endpoint = (action) => `${API_URL}/${action}`;
 
-const makeFetcher = (action, params, chain) => () => {
+const makeFetcher = (action, params, chain = (x) => x) => (addParams) => {
     const url = endpoint(action);
 
-    return m.request({ url, params }).then((res) => {
+    return m.request({
+        url,
+        params: { ...params, ...addParams }
+    }).then((res) => {
         if (res.error) throw res.error;
         return res.data[0];
-    }).then(d =>
-        chain ? chain(d) : d
-    );
+    }).then(chain);
 };
 
 export function queryProfiles(staged, steamids) {
-    const initial = (staged && staged.length) ? staged : null;
+    const initial = staged || [];
+    const skip = initial.length || staged == undefined;
+
     const fetcher = makeFetcher('getProfiles', { steamids },
         ({ profiles }) => profiles
     );
-    return query(fetcher, { initial });
+
+    return query(fetcher, { initial, skip });
 }
 
 export function queryCommonApps(apps, steamids) {
-    const initial = (apps && apps.length) ? apps : null;
+    const initial = apps || [];
+    const skip = initial.length || apps == undefined;
+
     const fetcher = makeFetcher('getCommonApps', { steamids },
         ({ apps }) => apps
     );
-    return query(fetcher, { initial });
+
+    return query(fetcher, { initial, skip });
 }
 
 export function queryCategories(categories) {
-    const initial = (categories && categories.length) ? categories : null;
+    const initial = categories || [];
+    const skip = initial.length || categories == undefined;
+
     const fetcher = makeFetcher('getCategories', {}, Object.entries);
-    return query(fetcher, { initial });
+    return query(fetcher, { initial, skip });
 }
 
-export async function getFriends(steamid) {
-    let [profiles, error] = [{}, ''];
-    const url = endpoint('getFriends');
-
-    try {
-        const res = await m.request({ url, params: { steamid } });
-        if (res.error) throw res.error;
-        profiles = res.data[0];
-    } catch (e) {
-        console.error(e.message || e);
-        error = 'Error: Unable to get friends.';
-    }
-
-    return [profiles, error];
-}
-
-export async function getProfiles(steamids) {
-    let [profiles, error] = [[], ''];
-    const url = endpoint('getProfiles');
-
-    try {
-        const res = await m.request({ url, params: { steamids } });
-        if (res.error) throw res.error;
-        profiles = res.data[0].profiles;
-    } catch (e) {
-        console.error(e.message || e);
-        error = 'Error: Unable to get user profiles.';
-    }
-
-    return [profiles, error];
-}
-
-export async function getCommonApps(steamids) {
-    let [common, error] = [{}, ''];
-    const appsUrl = endpoint('getCommonApps');
-    const categoriesUrl = endpoint('getCategories');
-
-    try {
-        const [appsRes, catsRes] = await Promise.all([
-            m.request({ url: appsUrl, params: { steamids } }),
-            m.request({ url: categoriesUrl })
-        ]);
-
-        let reqErr;
-        if (reqErr = (appsRes.error || catsRes.error)) {
-            throw reqErr;
-        }
-
-        common = appsRes.data[0];
-        common.categories = catsRes.data[0];
-    } catch (e) {
-        console.error(e.message || e);
-        error = 'Error: Unable to get user libraries & categories.'
-    }
-
-    return [common, error];
+export function queryFriends() {
+    const fetcher = makeFetcher('getFriends');
+    return query(fetcher, { initial: {}, skip: true });
 }

@@ -1,11 +1,11 @@
 import m from 'mithril';
-import { computed } from 'vyce';
 import { Spinner, Card, TextInput } from './components';
 import { queryProfiles, queryCommonApps, queryCategories } from './api';
+import { combine } from './util';
 
 const MULTIPLAYER_CATEGORIES = [1, 9, 20, 27, 36, 38];
 
-export function Apps({ attrs: { state, actions, steamids } }) {
+export function Apps({ attrs: { state, steamids } }) {
     // on page change
     window.scroll(0, 0);
 
@@ -14,22 +14,14 @@ export function Apps({ attrs: { state, actions, steamids } }) {
     let filtered = [];
 
     const profiles = queryProfiles(Object.values(state.staged), steamids);
-    const categories = queryCategories(Object.entries(state.categoryMap));
+    const categories = queryCategories(state.categories);
     const apps = queryCommonApps(state.apps, steamids);
 
-    const [loading, error] = ['loading', 'error'].map(key =>
-        computed([profiles[key], categories[key], apps[key]], (x, y, z) =>
-            x || y || z
-        )
-    );
+    // initialize filtered to initial apps data
+    apps.once((data) => filtered = data);
 
-    const unsub = apps.data.sub((value) => {
-        if (value) {
-            // initialize filtered to initial apps value
-            filtered = value;
-            unsub();
-        }
-    });
+    const loading = combine('loading', [profiles, categories, apps]);
+    const error = combine('error', [profiles, categories, apps]);
 
     function categoryFilter(app) {
         if (!checkedCategories.length) return true;
@@ -57,12 +49,12 @@ export function Apps({ attrs: { state, actions, steamids } }) {
                 m(Spinner)
             ,
 
-            !loading() && error() &&
-                m('div.error', 'Unable to retrieve apps.')
+            error() &&
+                m('div.error', 'Unable to retrieve common apps.')
             ,
 
             !loading() && !error() && [
-                profiles.data() && m('section',
+                m('section',
                     m('hr'),
                     m('h2', 'Profiles'),
                     m('div.grid.columns-200.gap-1',
@@ -75,7 +67,7 @@ export function Apps({ attrs: { state, actions, steamids } }) {
                     )
                 ),
 
-                categories.data() && apps.data() && m('section',
+                m('section',
                     m('hr'),
                     m('h2', 'Categories'),
                     m('div.subsection.flex.gap-1',
@@ -116,7 +108,7 @@ export function Apps({ attrs: { state, actions, steamids } }) {
                     )
                 ),
 
-                apps.data() && m('section',
+                m('section',
                     m('hr'),
                     m('h2', `Apps (${filtered.length})`),
                     m(TextInput, {

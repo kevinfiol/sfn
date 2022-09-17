@@ -11,7 +11,7 @@
   "dependencies": {
     "classies": "^1.0.5",
     "mithril": "2.2.2",
-    "vyce": "^0.8.0"
+    "vyce": "0.8.4"
   },
   "devDependencies": {
     "env-smart": "^2.3.0",

@@ -1,38 +1,23 @@
 const State = () => ({
-    loading: false,
-    error: '',
-    user: null,
     friends: null,
     staged: {},
     stagedCount: 0,
     idString: '',
-    appCount: null,
     apps: [],
-    categoryMap: {}
+    categories: []
 });
 
 const Actions = (state) => ($ = {
-    setError: (error) => state.error = error,
-
-    setLoading: (loading) => {
-        if (loading) $.setError('');
-        state.loading = loading;
-    },
-
-    setProfiles: ({ user, friends }) => {
-        state.user = user || null;
-        state.friends = friends || null;
-
+    setProfiles: ({ user }) => {
         // reset staged properties
         state.staged = {};
         state.stagedCount = 0;
         if (user) $.toggleStage(user);
     },
 
-    setApps: ({ count, apps, categories }) => {
-        state.appCount = count || 0;
+    setApps: (apps, categories) => {
         state.apps = apps;
-        state.categoryMap = categories;
+        state.categories = categories;
     },
 
     toggleStage: (profile) => {

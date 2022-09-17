@@ -1,5 +1,50 @@
 import { store, computed } from 'vyce';
 
+export function query(fetcher, { initial = null, skip = false } = {}) {
+    const data = store(initial);
+    const error = store();
+    const loading = store(false);
+
+    // convenience method to initialize local variables in functions
+    const once = (f) => {
+        let unsub;
+        unsub = data.sub(x => {
+            if (x) {
+                f(x);
+                if (unsub) unsub();
+            }
+        });
+    };
+
+    const runFetcher = (params = {}) => {
+        loading(true);
+        return fetcher(params)
+            .then(data)
+            .catch(error)
+            .finally(_ => loading(false));
+    };
+
+    const mutate = async (params) => runFetcher(params);
+
+    const props = {
+        data,
+        error,
+        loading,
+        once,
+        mutate
+    };
+
+    // initial fetch
+    if (!skip) runFetcher();
+    return props;
+}
+
+export function combine(key, queries) {
+    return computed(queries.map(query => query[key]), (...stores) => {
+        return stores.reduce((a, c) => a || c, false);
+    });
+};
+
 export function SpinnerEl(element, ms = 100) {
     let el = element;
     let step = 0;
@@ -30,16 +75,4 @@ export function SpinnerEl(element, ms = 100) {
             clearInterval(timer);
         }
     };
-}
-
-export function query(fetcher, { initial = undefined } = {}) {
-    const data = store(initial);
-    const error = store();
-    const loading = computed([data, error], (d, e) => !d && !e);
-
-    !initial && fetcher()
-        .then(data)
-        .catch(error);
-
-    return { data, error, loading };
 }

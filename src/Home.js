@@ -1,34 +1,28 @@
 import m from 'mithril';
 import { TextInput, Spinner, Card } from './components';
-import { getFriends, getCommonApps } from './api';
+import { queryCategories, queryCommonApps, queryFriends } from './api';
 
 export function Home({ attrs: { actions } }) {
     let steamid = '';
 
+    const profiles = queryFriends();
+    const apps = queryCommonApps();
+    const categories = queryCategories();
+
     async function onSubmit(ev) {
         ev.preventDefault();
-        actions.setProfiles({});
-        actions.setLoading(true);
-
-        const [profiles, error] = await getFriends(steamid);
-        if (error) actions.setError(error);
-        else actions.setProfiles(profiles);
-
-        actions.setLoading(false);
-        m.redraw();
+        await profiles.mutate({ steamid });
+        actions.setProfiles(profiles.data());
     }
 
     async function compareLibraries(idString) {
-        actions.setLoading(true);
+        await Promise.all([
+            apps.mutate({ steamids: idString }),
+            categories.mutate()
+        ]);
 
-        const [common, error] = await getCommonApps(idString);
-        if (error) actions.setError(error);
-        else actions.setApps(common);
-
-        actions.setLoading(false);
-        // go to apps route
-        m.route.set('/' + idString);
-        m.redraw();
+        actions.setApps(apps.data(), categories.data());
+        m.route.set('/' + idString); // go to apps route
     }
 
     return {
@@ -42,31 +36,38 @@ export function Home({ attrs: { actions } }) {
                 )
             ),
 
-            state.loading &&
+            (profiles.loading() || apps.loading()) &&
                 m(Spinner)
             ,
 
-            state.error && m('section',
-                m('div.error', state.error)
+            profiles.error() && m('section',
+                m('div.error', 'Unable to retrieve profiles.')
             ),
 
-            state.user && m('section',
+            apps.error() && m('section',
+                m('div.error', 'Unable to retrieve apps.')
+            ),
+
+            profiles.data().user && m('section',
                 m('hr'),
                 m('h2', 'User'),
-                m(Card, { profile: state.user, showHeader: true })
+                m(Card, {
+                    profile: profiles.data().user,
+                    showHeader: true
+                })
             ),
 
-            state.friends && state.friends.length > 0 && m('section',
+            profiles.data().user && profiles.data().friends.length > 0 && m('section',
                 m('hr'),
                 m('h2', 'Friends'),
                 m('div.grid.columns-200.gap-1',
-                    state.friends.map((friend) =>
+                    profiles.data().friends.map((friend) =>
                         m(Card, {
                             key: friend.steamid,
                             profile: friend,
                             isStaged: state.staged[friend.steamid],
                             onClick: () => {
-                                actions.toggleStage(friend)
+                                actions.toggleStage(friend);
                             }
                         })
                     )
@@ -77,9 +78,9 @@ export function Home({ attrs: { actions } }) {
                 m('div.panel',
                     m('div', (state.stagedCount - 1) + ' friends selected'),
                     m('button', {
-                        disabled: state.loading,
+                        disabled: apps.loading(),
                         onclick: () => {
-                            compareLibraries(state.idString)
+                            compareLibraries(state.idString);
                         }
                     }, 'Compare Libraries')
                 )
