@@ -1,30 +1,32 @@
-import { store, computed } from 'vyce';
-
 export function query(fetcher, { initial = null, skip = false } = {}) {
     const data = store(initial);
     const error = store();
     const loading = store(false);
 
-    // convenience method to initialize local variables in functions
-    const once = (f) => {
+    function once(fn) {
         let unsub;
-        unsub = data.sub(x => {
+        unsub = data.sub((x) => {
             if (x) {
-                f(x);
-                if (unsub) unsub();
+                fn(x);
+                if (unsub) {
+                    unsub();
+                    unsub = undefined;
+                }
             }
         });
-    };
+    }
 
-    const runFetcher = (params = {}) => {
+    function runFetcher(params = {}) {
         loading(true);
         return fetcher(params)
             .then(data)
             .catch(error)
-            .finally(_ => loading(false));
-    };
+            .finally(_ => {
+                loading(false);
+            });
+    }
 
-    const mutate = async (params) => runFetcher(params);
+    const mutate = (params) => runFetcher(params);
 
     const props = {
         data,
@@ -40,10 +42,41 @@ export function query(fetcher, { initial = null, skip = false } = {}) {
 }
 
 export function combine(key, queries) {
-    return computed(queries.map(query => query[key]), (...stores) => {
-        return stores.reduce((a, c) => a || c, false);
+    const stores = queries.map(query => query[key]);
+
+    const calc = () => stores.reduce((a, c) => {
+        return a || c();
+    }, false);
+
+    const combined = store(calc());
+
+    stores.map(s => {
+        s.sub(_ => {
+            combined(calc());
+        }, false);
     });
+
+    return combined;
 };
+
+export function store(initial) {
+    let value = initial;
+    let subs = [];
+
+    let $ = function (x) {
+        if (!arguments.length) return value;
+        value = x;
+        subs.map(fn => fn(x));
+    }
+
+    $.sub = (fn, run = true) => {
+        if (run) fn(value);
+        subs.push(fn);
+        return _ => subs = subs.filter(x => x != fn);
+    };
+
+    return $;
+}
 
 export function SpinnerEl(element, ms = 100) {
     let el = element;
