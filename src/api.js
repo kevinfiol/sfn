@@ -1,5 +1,5 @@
 import m from 'mithril';
-import { query } from './util';
+import { query } from './query';
 
 const API_URL = process.env.API_URL;
 const endpoint = (action) => `${API_URL}/${action}`;
