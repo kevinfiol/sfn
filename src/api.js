@@ -4,16 +4,18 @@ import { query } from './query';
 const API_URL = process.env.API_URL;
 const endpoint = (action) => `${API_URL}/${action}`;
 
-const makeFetcher = (action, params, chain = (x) => x) => (addParams) => {
-    const url = endpoint(action);
+function makeFetcher(action, params, chain = (x) => x) {
+    return (addParams) => {
+        const url = endpoint(action);
 
-    return m.request({
-        url,
-        params: { ...params, ...addParams }
-    }).then((res) => {
-        if (res.error) throw res.error;
-        return res.data[0];
-    }).then(chain);
+        return m.request({
+            url,
+            params: { ...params, ...addParams }
+        }).then((res) => {
+            if (res.error) throw res.error;
+            return res.data[0];
+        }).then(chain);
+    };
 };
 
 export function queryProfiles(staged, steamids) {
