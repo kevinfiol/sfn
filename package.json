@@ -9,12 +9,12 @@
     "pnpm": "7.x"
   },
   "dependencies": {
-    "classies": "^1.0.5",
-    "mithril": "2.2.2"
+    "classies": "1.0.5",
+    "mithril": "3.0.0-next.8"
   },
   "devDependencies": {
-    "env-smart": "^2.3.0",
+    "env-smart": "2.3.0",
     "esbuild": "0.14.28",
-    "servbot": "0.2.3"
+    "servbot": "0.2.6"
   }
 }

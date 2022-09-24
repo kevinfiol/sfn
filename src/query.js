@@ -36,7 +36,7 @@ export function or(key, queries) {
     );
 };
 
-export function combine(key, queries, fn) {
+function combine(key, queries, fn) {
     const stores = queries.map(query => query[key]);
     const calc = _ => fn(stores);
     const combined = store(calc());
@@ -50,7 +50,7 @@ export function combine(key, queries, fn) {
     return combined;
 };
 
-export function store(initial) {
+function store(initial) {
     let value = initial;
     let subs = [];
 
