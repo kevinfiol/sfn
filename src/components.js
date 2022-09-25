@@ -1,6 +1,5 @@
 import m from 'mithril';
 import cls from 'classies';
-import { SpinnerEl } from './util';
 
 export const TextInput = () => ({
     view: ({ attrs: { placeholder, value, onInput } }) =>
@@ -13,43 +12,51 @@ export const TextInput = () => ({
 });
 
 export const Spinner = () => {
-    let spinner = null;
+    let timer = undefined;
+    let step = 0;
+
+    const MS = 100;
+    const steps = ['|', '/', '-', '\\', '|', '/', '-', '\\'];
+    const len = steps.length;
 
     return {
         oncreate: ({ dom }) => {
-            spinner = SpinnerEl(dom);
-            spinner.start();
+            timer = setInterval(() => {
+                step += 1;
+                if (step === len) step = 0;
+                dom.innerText = steps[step];
+            }, MS);
         },
 
-        onremove: () => {
-            if (spinner) spinner.remove();
+        onremove: ({ dom }) => {
+            dom.innerText = '';
+            clearInterval(timer);
         },
 
         view: () => m('div.spinner')
     }
 };
 
-export const Card = () => ({
+export const UserCard = () => ({
     view: ({ attrs: { profile, onClick, isStaged, showHeader } }) =>
-        m('div.card.max-width-3', {
-            title: !profile.visible ? 'This profile is private.' : undefined,
+        m('article.card.-user', {
             onclick: profile.visible && onClick,
             className: cls({
                 '-staged': isStaged,
-                'clickable': profile.visible && onClick,
+                'clickable': onClick,
                 'opacity-50': !profile.visible
             })
         },
             showHeader &&
-                m('header.overflow-hidden',
+                m('header',
                     m('a', { href: profile.profileurl },
                         profile.profileurl
                     )
                 )
             ,
 
-            m('div.flex.select-none',
-                m('img.mr-2', {
+            m('div.body',
+                m('img', {
                     style: { width: '40px' },
                     src: profile.avatar
                 }),
@@ -57,8 +64,50 @@ export const Card = () => ({
                 m('span', profile.personaname),
 
                 isStaged && 
-                    m('span.pl-1', '✓')
+                    m('span.checkmark', '✓')
                 ,
+            )
+        )
+});
+
+export const AppCard = () => ({
+    view: ({ attrs: { name, platforms, steam_appid, header_image } }) =>
+        m('article.card.-app',
+            m('div.body',
+                m('a.-neutral', {
+                    href: `https://store.steampowered.com/app/${steam_appid}`
+                },
+                    m('img.border', {
+                        loading: 'lazy',
+                        src: header_image
+                    })
+                ),
+
+                m('span', name),
+
+                m('small.block',
+                    // makes a string like `windows / linux / mac`
+                    Object.entries(platforms).reduce((str, platform) => {
+                        if (platform[1]) str += str ? ' / ' + platform[0] : platform[0];
+                        return str;
+                    }, '')
+                )
+            )
+        )
+});
+
+export const CheckBox = () => ({
+    view: ({ attrs: { name, value, checked, onChange } }) =>
+        m('div.checkbox', { className: checked ? '-selected' : '' },
+            m('label', { for: name },
+                m('span.name', name),
+                m('input', {
+                    type: 'checkbox',
+                    id: name,
+                    value,
+                    checked,
+                    onchange: ({ target }) => onChange(target.checked)
+                })
             )
         )
 });

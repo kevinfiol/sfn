@@ -1,7 +1,22 @@
 import m from 'mithril';
+import cls from 'classies';
 import { State, Actions } from './state';
+import { Spinner } from './components';
 import { Home } from './Home';
 import { Apps } from './Apps';
+
+const Layout = () => ({
+    view: ({ attrs: { state }, children }) =>
+        m('div',
+            state.loading &&
+                m(Spinner)
+            ,
+
+            m('div.page', { className: cls({ '-loading': state.loading }) },
+                children
+            )
+        )
+});
 
 function mount(root) {
     const state = State();
@@ -11,12 +26,16 @@ function mount(root) {
     m.route(root, '/', {
         '/': {
             render: () =>
-                m(Home, { state, actions })
+                m(Layout, { state },
+                    m(Home, { state, actions })
+                )
         },
 
         '/:steamids': {
             render: ({ attrs: { steamids } }) =>
-                m(Apps, { state, actions, steamids })
+                m(Layout, { state },
+                    m(Apps, { state, actions, steamids })
+                )
         }
     });
 }

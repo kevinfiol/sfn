@@ -26,5 +26,6 @@ bundle({
     }
 }).then(logSuccess).catch(e => {
     logError(e);
+    server.close();
     process.exit(1);
 });
