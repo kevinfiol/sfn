@@ -350,7 +350,7 @@ footer {
 .spinner {
     position: fixed;
     left: 50%;
-    top: 25%;
+    top: 20%;
     font-weight: bolder;
     z-index: 9;
     font-size: 1.5em;

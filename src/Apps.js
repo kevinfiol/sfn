@@ -55,7 +55,7 @@ export function Apps({ attrs: { state, actions, steamids } }) {
 
     return {
         view: () => [
-            error() &&
+            !loading() && error() &&
                 m('div.error', 'Unable to retrieve common apps.')
             ,
 
