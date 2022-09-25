@@ -1,5 +1,5 @@
 const State = () => ({
-    friends: null,
+    loading: false,
     staged: {},
     stagedCount: 0,
     idString: '',
@@ -8,6 +8,10 @@ const State = () => ({
 });
 
 const Actions = (state) => ($ = {
+    setLoading: (loading) => {
+        state.loading = loading;
+    },
+
     setProfiles: ({ user }) => {
         // reset staged properties
         state.staged = {};

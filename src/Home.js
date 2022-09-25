@@ -1,6 +1,7 @@
 import m from 'mithril';
-import { TextInput, Spinner, Card } from './components';
+import { TextInput, UserCard } from './components';
 import { queryCategories, queryCommonApps, queryFriends } from './api';
+import { or } from './query';
 
 export function Home({ attrs: { actions } }) {
     let steamid = '';
@@ -8,6 +9,11 @@ export function Home({ attrs: { actions } }) {
     const profiles = queryFriends();
     const apps = queryCommonApps();
     const categories = queryCategories();
+
+    const loading = or('loading', [profiles, apps]);
+
+    // subscribe to loading store & update global state on changes
+    loading.sub(actions.setLoading);
 
     async function onSubmit(ev) {
         ev.preventDefault();
@@ -26,19 +32,16 @@ export function Home({ attrs: { actions } }) {
     }
 
     return {
-        view: ({ attrs: { state } }) => m('div',
+        view: ({ attrs: { state } }) => [
             m('section',
-                m('form', { onsubmit: onSubmit },
+                m('form.input-group', { onsubmit: onSubmit },
                     m(TextInput, {
                         placeholder: 'enter steamid',
                         onInput: (v) => steamid = v
-                    })
+                    }),
+                    m('button.border.border-left-0', 'submit')
                 )
             ),
-
-            (profiles.loading() || apps.loading()) &&
-                m(Spinner)
-            ,
 
             profiles.error() && m('section',
                 m('div.error', 'Unable to retrieve profiles.')
@@ -51,7 +54,7 @@ export function Home({ attrs: { actions } }) {
             profiles.data().user && m('section',
                 m('hr'),
                 m('h2', 'User'),
-                m(Card, {
+                m(UserCard, {
                     profile: profiles.data().user,
                     showHeader: true
                 })
@@ -62,7 +65,7 @@ export function Home({ attrs: { actions } }) {
                 m('h2', 'Friends'),
                 m('div.grid.columns-200.gap-1',
                     profiles.data().friends.map((friend) =>
-                        m(Card, {
+                        m(UserCard, {
                             key: friend.steamid,
                             profile: friend,
                             isStaged: state.staged[friend.steamid],
@@ -85,6 +88,6 @@ export function Home({ attrs: { actions } }) {
                     }, 'Compare Libraries')
                 )
             ,
-        )
+        ]
     };
 }

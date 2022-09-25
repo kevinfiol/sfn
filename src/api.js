@@ -44,7 +44,7 @@ export function queryCategories(categories) {
     const initial = categories || [];
     const skip = initial.length || categories == undefined;
 
-    const fetcher = makeFetcher('getCategories', {}, Object.entries);
+    const fetcher = makeFetcher('getCategories');
     return query(fetcher, { initial, skip });
 }
 
