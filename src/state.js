@@ -1,5 +1,7 @@
 const State = () => ({
     loading: false,
+    user: null,
+    friends: [],
     staged: {},
     stagedCount: 0,
     idString: '',
@@ -12,8 +14,10 @@ const Actions = (state) => ($ = {
         state.loading = loading;
     },
 
-    setProfiles: ({ user }) => {
+    setProfiles: ({ user, friends }) => {
         // reset staged properties
+        state.user = user;
+        state.friends = friends || [];
         state.staged = {};
         state.stagedCount = 0;
         if (user) $.toggleStage(user);

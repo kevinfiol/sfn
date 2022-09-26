@@ -51,20 +51,20 @@ export function Home({ attrs: { actions } }) {
                 m('div.error', 'Unable to retrieve apps.')
             ),
 
-            profiles.data().user && m('section',
+            state.user && m('section',
                 m('hr'),
                 m('h2', 'User'),
                 m(UserCard, {
-                    profile: profiles.data().user,
+                    profile: state.user,
                     showHeader: true
                 })
             ),
 
-            profiles.data().user && profiles.data().friends.length > 0 && m('section',
+            state.user && state.friends.length > 0 && m('section',
                 m('hr'),
                 m('h2', 'Friends'),
                 m('div.grid.columns-200.gap-1',
-                    profiles.data().friends.map((friend) =>
+                    state.friends.map((friend) =>
                         m(UserCard, {
                             key: friend.steamid,
                             profile: friend,
