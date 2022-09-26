@@ -21,8 +21,8 @@ export function Apps({ attrs: { state, actions, steamids } }) {
     // initialize filtered to initial apps data
     apps.once((data) => filtered = data);
 
-    const loading = or('loading', [profiles, categories, apps]);
-    const error = or('error', [profiles, categories, apps]);
+    const loading = or(profiles.loading, categories.loading, apps.loading);
+    const error = or(profiles.error, categories.error, apps.error);
 
     // subscribe to loading store & update global state on changes
     loading.sub(actions.setLoading);

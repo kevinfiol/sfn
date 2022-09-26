@@ -1,4 +1,8 @@
-export function query(fetcher, { initial = null, skip = false } = {}) {
+export function query(
+    key = '',
+    fetcher,
+    { initial = null, skip = false, params = {}, chain = x => x } = {}
+) {
     let data = store(initial),
         error = store(),
         loading = store(false);
@@ -16,9 +20,10 @@ export function query(fetcher, { initial = null, skip = false } = {}) {
 
     function runFetcher(params = {}) {
         loading(true);
-        return fetcher(params)
-            .then(data)
-            .catch(error)
+        return fetcher(key, params)
+            .then(chain) // optional chain after data retrieval
+            .then(data) // set data in store
+            .catch(error) // set error in store
             .finally(_ => {
                 loading(false);
             });
@@ -26,20 +31,19 @@ export function query(fetcher, { initial = null, skip = false } = {}) {
 
     let mutate = params => runFetcher(params);
 
-    if (!skip) runFetcher();
+    if (!skip) runFetcher(params);
     return { data, error, loading, once, mutate };
 }
 
-export function or(key, queries) {
-    return combine(key, queries, stores =>
-        stores.reduce((a, c) => a || c(), false)
+export function or(...stores) {
+    return combine(stores, xs =>
+        xs.reduce((a, c) => a || c(), false)
     );
 };
 
-function combine(key, queries, fn) {
-    const stores = queries.map(query => query[key]);
-    const calc = _ => fn(stores);
-    const combined = store(calc());
+function combine(stores, fn) {
+    let calc = _ => fn(stores);
+    let combined = store(calc());
 
     stores.map(s => {
         s.sub(_ => {

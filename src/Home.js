@@ -10,7 +10,7 @@ export function Home({ attrs: { actions } }) {
     const apps = queryCommonApps();
     const categories = queryCategories();
 
-    const loading = or('loading', [profiles, apps]);
+    const loading = or(profiles.loading, apps.loading);
 
     // subscribe to loading store & update global state on changes
     loading.sub(actions.setLoading);
