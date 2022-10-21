@@ -88,7 +88,7 @@ table caption {
     padding: var(--spacing-4);
 }
 
-table td, table th {
+table :is(td, th) {
     vertical-align: top;
     border: 1px solid var(--border-color);
     padding: var(--spacing-2);
@@ -146,10 +146,8 @@ textarea,
     box-sizing: border-box;
 }
 
-button:focus-visible,
-button:focus
-input:focus-visible,
-input:focus {
+:is(button, input):focus,
+:is(button, input):focus-visible {
     outline: none;
     outline: 1px solid var(--focus-color);
 }
@@ -211,8 +209,7 @@ button:not([disabled]):hover {
     padding: var(--spacing-1);
 }
 
-.card > header a,
-.card > header a:hover {
+.card > header :is(a, a:hover) {
     color: var(--bg-color);
     background-color: var(--color);
     margin: 0;
