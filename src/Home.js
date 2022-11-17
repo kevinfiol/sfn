@@ -3,7 +3,7 @@ import { TextInput, UserCard } from './components';
 import { queryCategories, queryCommonApps, queryFriends } from './api';
 import { or } from './query';
 
-export function Home({ state, actions, router }) {
+export function Home({ actions, router }) {
     let steamid = '';
 
     const profiles = queryFriends();
@@ -19,8 +19,6 @@ export function Home({ state, actions, router }) {
         ev.preventDefault();
         await profiles.mutate({ steamid });
         actions.setProfiles(profiles.data());
-        console.log(state);
-        redraw();
     }
 
     async function compareLibraries(idString) {
@@ -33,10 +31,11 @@ export function Home({ state, actions, router }) {
         router.route('/' + idString);
     }
 
-    return ({ state }) => { console.log(state);return [
+    return ({ state }) => { console.log(JSON.stringify(state.user));return [
         m('section',
             m('form.input-group', { onsubmit: onSubmit },
                 m(TextInput, {
+                    value: steamid,
                     placeholder: 'enter steamid',
                     onInput: (v) => steamid = v
                 }),

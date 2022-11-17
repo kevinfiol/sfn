@@ -34,6 +34,7 @@ export function query(
             .catch(error) // set error in store
             .finally(_ => {
                 loading(false);
+                console.log('about to redraw');
                 end();
             });
     }

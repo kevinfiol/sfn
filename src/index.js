@@ -23,7 +23,7 @@ const App = ({ state, actions, router }) => (
 
             state.route.path === ROUTE.LIBRARY &&
                 m('div',
-                    m('a', { href: '/' }, 'back home')
+                    m('a', { href: '/' }, 'back hdfome')
                 )
             ,
         )
@@ -46,6 +46,14 @@ function mount(root) {
 
     router.listen();
     app(m(App, { state, actions, router }), root);
+
+    // window.servbot.save(() => {
+    //     return state;
+    // });
+
+    // window.servbot.onload(data => {
+    //     // do something with it
+    // })
 }
 
 mount(document.getElementById('app'));
