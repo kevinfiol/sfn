@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "classies": "1.0.5",
-    "mithril": "3.0.0-next.8"
+    "closures": "^0.7.6",
+    "mithril": "3.0.0-next.8",
+    "navaid": "^1.2.0"
   },
   "devDependencies": {
     "env-smart": "2.3.0",

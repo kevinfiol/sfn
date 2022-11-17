@@ -2,14 +2,18 @@ lockfileVersion: 5.4
 
 specifiers:
   classies: 1.0.5
+  closures: ^0.7.6
   env-smart: 2.3.0
   esbuild: 0.14.28
   mithril: 3.0.0-next.8
+  navaid: ^1.2.0
   servbot: 0.2.6
 
 dependencies:
   classies: 1.0.5
+  closures: 0.7.6
   mithril: 3.0.0-next.8
+  navaid: 1.2.0
 
 devDependencies:
   env-smart: 2.3.0
@@ -20,6 +24,11 @@ packages:
 
   /classies/1.0.5:
     resolution: {integrity: sha512-yJGY1CLHlcKQ2qcQIj4MrnEaM6+xpiJGVXW52ffyVKJSHE6IdmmSuncLiCvmyHQ+CdxTbwF09QYx98442LtCTA==}
+    dev: false
+
+  /closures/0.7.6:
+    resolution: {integrity: sha512-OPkRVSXE5bfcp7prTnjfQ8IDOBYUAE5PFiLV3YX535BkV3MZge312VCJJvXbsjoT2g35KWOdJfW4GKTvCD7acA==}
+    engines: {node: '>=12.x'}
     dev: false
 
   /env-smart/2.3.0:
@@ -236,6 +245,18 @@ packages:
 
   /mithril/3.0.0-next.8:
     resolution: {integrity: sha512-Iyp4KizWx0Sflp2iv0rxJJJxPGOUW/gu4UMIaBBotzfWkt6BXGDxH5qhkdhbsQ0qh9PVsBwJNFIQsiMd2nj4Jw==}
+    dev: false
+
+  /navaid/1.2.0:
+    resolution: {integrity: sha512-Yh5mix394WrT5go29GFeFD4Gp4W0Xj1Ejs0KHXXCA24KKW74pq3PY3fwP3o18KveYO/pjUI2zzcAAp8kY98aNA==}
+    engines: {node: '>= 6'}
+    dependencies:
+      regexparam: 1.3.0
+    dev: false
+
+  /regexparam/1.3.0:
+    resolution: {integrity: sha512-6IQpFBv6e5vz1QAqI+V4k8P2e/3gRrqfCJ9FI+O1FLQTO+Uz6RXZEZOPmTJ6hlGj7gkERzY5BRCv09whKP96/g==}
+    engines: {node: '>=6'}
     dev: false
 
   /servbot/0.2.6:

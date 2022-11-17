@@ -1,4 +1,5 @@
-const State = () => ({
+const State = (init = {}) => ({
+    route: { path: '/', params: {} },
     loading: false,
     user: null,
     friends: [],
@@ -6,10 +7,15 @@ const State = () => ({
     stagedCount: 0,
     idString: '',
     apps: [],
-    categories: []
+    categories: [],
+    ...init
 });
 
 const Actions = (state) => ($ = {
+    setRoute: (path = '/', params = {}) => {
+        state.route = { path, params };
+    },
+
     setLoading: (loading) => {
         state.loading = loading;
     },

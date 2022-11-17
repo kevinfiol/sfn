@@ -1,7 +1,15 @@
+let noop = _ => {};
+
 export function query(
     key = '',
     fetcher,
-    { initial = null, skip = false, params = {}, chain = x => x } = {}
+    {
+        initial = null,
+        skip = false,
+        params = {},
+        chain = x => x,
+        end = noop
+    } = {}
 ) {
     let data = store(initial),
         error = store(),
@@ -26,6 +34,7 @@ export function query(
             .catch(error) // set error in store
             .finally(_ => {
                 loading(false);
+                end();
             });
     }
 

@@ -1,9 +1,9 @@
-import m from 'mithril';
+import { m, redraw } from 'closures';
 import { TextInput, UserCard } from './components';
 import { queryCategories, queryCommonApps, queryFriends } from './api';
 import { or } from './query';
 
-export function Home({ attrs: { actions } }) {
+export function Home({ state, actions, router }) {
     let steamid = '';
 
     const profiles = queryFriends();
@@ -19,6 +19,8 @@ export function Home({ attrs: { actions } }) {
         ev.preventDefault();
         await profiles.mutate({ steamid });
         actions.setProfiles(profiles.data());
+        console.log(state);
+        redraw();
     }
 
     async function compareLibraries(idString) {
@@ -28,66 +30,64 @@ export function Home({ attrs: { actions } }) {
         ]);
 
         actions.setApps(apps.data(), categories.data());
-        m.route.set('/' + idString); // go to apps route
+        router.route('/' + idString);
     }
 
-    return {
-        view: ({ attrs: { state } }) => [
-            m('section',
-                m('form.input-group', { onsubmit: onSubmit },
-                    m(TextInput, {
-                        placeholder: 'enter steamid',
-                        onInput: (v) => steamid = v
-                    }),
-                    m('button.border.border-left-0', 'submit')
-                )
-            ),
+    return ({ state }) => { console.log(state);return [
+        m('section',
+            m('form.input-group', { onsubmit: onSubmit },
+                m(TextInput, {
+                    placeholder: 'enter steamid',
+                    onInput: (v) => steamid = v
+                }),
+                m('button.border.border-left-0', 'submit')
+            )
+        ),
 
-            profiles.error() && m('section',
-                m('div.error', 'Unable to retrieve profiles.')
-            ),
+        profiles.error() && m('section',
+            m('div.error', 'Unable to retrieve profiles.')
+        ),
 
-            apps.error() && m('section',
-                m('div.error', 'Unable to retrieve apps.')
-            ),
+        apps.error() && m('section',
+            m('div.error', 'Unable to retrieve apps.')
+        ),
 
-            state.user && m('section',
-                m('hr'),
-                m('h2', 'User'),
-                m(UserCard, {
-                    profile: state.user,
-                    showHeader: true
-                })
-            ),
+        state.user && m('section',
+            m('hr'),
+            m('h2', 'User'),
+            m(UserCard, {
+                profile: state.user,
+                showHeader: true
+            })
+        ),
 
-            state.user && state.friends.length > 0 && m('section',
-                m('hr'),
-                m('h2', 'Friends'),
-                m('div.grid.columns-200.gap-1',
-                    state.friends.map((friend) =>
-                        m(UserCard, {
-                            key: friend.steamid,
-                            profile: friend,
-                            isStaged: state.staged[friend.steamid],
-                            onClick: () => {
-                                actions.toggleStage(friend);
-                            }
-                        })
-                    )
-                )
-            ),
-
-            state.stagedCount > 1 &&
-                m('div.panel',
-                    m('div', (state.stagedCount - 1) + ' friends selected'),
-                    m('button', {
-                        disabled: apps.loading(),
-                        onclick: () => {
-                            compareLibraries(state.idString);
+        state.user && state.friends.length > 0 && m('section',
+            m('hr'),
+            m('h2', 'Friends'),
+            m('div.grid.columns-200.gap-1',
+                state.friends.map((friend) =>
+                    m(UserCard, {
+                        key: friend.steamid,
+                        profile: friend,
+                        isStaged: state.staged[friend.steamid],
+                        onClick: () => {
+                            actions.toggleStage(friend);
                         }
-                    }, 'Compare Libraries')
+                    })
                 )
-            ,
-        ]
-    };
+            )
+        ),
+
+        state.stagedCount > 1 &&
+            m('div.panel',
+                m('div', (state.stagedCount - 1) + ' friends selected'),
+                m('button', {
+                    disabled: apps.loading(),
+                    onclick: () => {
+                        compareLibraries(state.idString);
+                    }
+                }, 'Compare Libraries')
+            )
+        ,
+    ];}
 }

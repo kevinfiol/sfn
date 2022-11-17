@@ -1,43 +1,51 @@
-import m from 'mithril';
+import { m, app, redraw } from 'closures';
+import navaid from 'navaid';
 import cls from 'classies';
 import { State, Actions } from './state';
 import { Spinner } from './components';
 import { Home } from './Home';
-import { Apps } from './Apps';
 
-const Layout = () => ({
-    view: ({ attrs: { state }, children }) =>
-        m('div',
-            state.loading &&
-                m(Spinner)
+const ROUTE = {
+    BASE: '/',
+    LIBRARY: '/:steamids'
+};
+
+const App = ({ state, actions, router }) => (
+    m('div',
+        state.loading &&
+            m(Spinner)
+        ,
+
+        m('div.page', { class: cls({ '-loading': state.loading }) },
+            state.route.path === ROUTE.BASE &&
+                m(Home, { state, actions, router })
             ,
 
-            m('div.page', { className: cls({ '-loading': state.loading }) },
-                children
-            )
+            state.route.path === ROUTE.LIBRARY &&
+                m('div',
+                    m('a', { href: '/' }, 'back home')
+                )
+            ,
         )
-});
+    )
+);
 
 function mount(root) {
-    const state = State();
+    const state = State({ route: { path: ROUTE.BASE, params: {} } });
     const actions = Actions(state);
 
-    m.route.prefix = '';
-    m.route(root, '/', {
-        '/': {
-            render: () =>
-                m(Layout, { state },
-                    m(Home, { state, actions })
-                )
-        },
+    const router = navaid();
 
-        '/:steamids': {
-            render: ({ attrs: { steamids } }) =>
-                m(Layout, { state },
-                    m(Apps, { state, actions, steamids })
-                )
-        }
+    router.on(ROUTE.BASE, () => {
+        actions.setRoute(ROUTE.BASE);
+        redraw();
+    }).on(ROUTE.LIBRARY, ({ steamids }) => {
+        actions.setRoute(ROUTE.LIBRARY, { steamids });
+        redraw();
     });
+
+    router.listen();
+    app(m(App, { state, actions, router }), root);
 }
 
 mount(document.getElementById('app'));
