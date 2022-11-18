@@ -1,4 +1,5 @@
-let noop = _ => {};
+let noop = _ => {},
+    defaultChain = x => x;
 
 export function query(
     key = '',
@@ -7,7 +8,7 @@ export function query(
         initial = null,
         skip = false,
         params = {},
-        chain = x => x,
+        transformChain = defaultChain,
         end = noop
     } = {}
 ) {
@@ -26,20 +27,32 @@ export function query(
         });
     }
 
-    function runFetcher(params = {}) {
+    function runFetcher(params = {}, chain = defaultChain) {
         loading(true);
         return fetcher(key, params)
-            .then(chain) // optional chain after data retrieval
-            .then(data) // set data in store
-            .catch(error) // set error in store
+            // transform data before saving in store
+            .then(transformChain)
+            // save data to store
+            .then(x => {
+                data(x);
+                return x;
+            })
+            // callback chain with new data
+            .then(x => {
+                try { return chain(x); }
+                catch (e) { throw e; }
+            })
+            // save error to store
+            .catch(error)
+            // clean up and call end task if exists
             .finally(_ => {
                 loading(false);
-                console.log('about to redraw');
-                end();
+                requestAnimationFrame(end);
             });
     }
 
-    let mutate = params => runFetcher(params);
+    let mutate = (params, optionalChain) =>
+        runFetcher(params, optionalChain);
 
     if (!skip) runFetcher(params);
     return { data, error, loading, once, mutate };

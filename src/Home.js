@@ -1,4 +1,4 @@
-import { m, redraw } from 'closures';
+import { m } from 'closures';
 import { TextInput, UserCard } from './components';
 import { queryCategories, queryCommonApps, queryFriends } from './api';
 import { or } from './query';
@@ -15,20 +15,24 @@ export function Home({ actions, router }) {
     // subscribe to loading store & update global state on changes
     loading.sub(actions.setLoading);
 
-    async function onSubmit(ev) {
+    function onSubmit(ev) {
         ev.preventDefault();
-        await profiles.mutate({ steamid });
-        actions.setProfiles(profiles.data());
+        profiles.mutate({ steamid }, actions.setProfiles);
     }
 
-    async function compareLibraries(idString) {
-        await Promise.all([
+    function compareLibraries(idString) {
+        Promise.all([
             apps.mutate({ steamids: idString }),
             categories.mutate()
-        ]);
+        ]).then(console.log);
 
-        actions.setApps(apps.data(), categories.data());
-        router.route('/' + idString);
+        // await Promise.all([
+        //     apps.mutate({ steamids: idString }),
+        //     categories.mutate()
+        // ]);
+
+        // actions.setApps(apps.data(), categories.data());
+        // router.route('/' + idString);
     }
 
     return ({ state }) => { console.log(JSON.stringify(state.user));return [
