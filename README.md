@@ -1,6 +1,6 @@
 # steam friend night
 
-A [Mithril.js](https://mithril.js.org) app to compare steam libraries with friends. The backend is [steam-api](https://github.com/kevinfiol/steam-api).
+A [closures](https://github.com/kevinfiol/closures) app to compare steam libraries with friends. The backend is [steam-api](https://github.com/kevinfiol/steam-api).
 
 ![screenshot](/screenshot.png)
 
