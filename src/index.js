@@ -1,59 +1,50 @@
 import { m, app, redraw } from 'closures';
 import navaid from 'navaid';
-import cls from 'classies';
 import { State, Actions } from './state';
 import { Spinner } from './components';
-import { Home } from './Home';
 
-const ROUTE = {
-    BASE: '/',
-    LIBRARY: '/:steamids'
-};
+const HOME = { path: '/', cmp: import('./Home.js') };
+const APPS = { path: '/:steamids', cmp: import('./Apps.js') };
 
-const App = ({ state, actions, router }) => (
+let $page;
+
+function run(thunk, props) {
+    return Promise.resolve(thunk).then((mod) => {
+        $page = m(mod.default || mod, props);
+    }).then(redraw);
+}
+
+const App = ({ state }) => (
     m('div',
         state.loading &&
             m(Spinner)
         ,
 
-        m('div.page', { class: cls({ '-loading': state.loading }) },
-            state.route.path === ROUTE.BASE &&
-                m(Home, { state, actions, router })
-            ,
-
-            state.route.path === ROUTE.LIBRARY &&
-                m('div',
-                    m('a', { href: '/' }, 'back hdfome')
-                )
-            ,
+        m('div.page', { class: { '-loading': state.loading } },
+            $page
         )
     )
 );
 
 function mount(root) {
-    const state = State({ route: { path: ROUTE.BASE, params: {} } });
+    const router = navaid();
+    const state = State();
     const actions = Actions(state);
 
-    const router = navaid();
+    const ctx = { state, actions, router };
 
-    router.on(ROUTE.BASE, () => {
-        actions.setRoute(ROUTE.BASE);
-        redraw();
-    }).on(ROUTE.LIBRARY, ({ steamids }) => {
-        actions.setRoute(ROUTE.LIBRARY, { steamids });
-        redraw();
-    });
+    app(m(App, ctx), root);
+
+    router
+        .on(HOME.path, () => {
+            actions.reset();
+            run(HOME.cmp, ctx);
+        })
+        .on(APPS.path, (params) => {
+            run(APPS.cmp, { ...ctx, ...params })
+        });
 
     router.listen();
-    app(m(App, { state, actions, router }), root);
-
-    // window.servbot.save(() => {
-    //     return state;
-    // });
-
-    // window.servbot.onload(data => {
-    //     // do something with it
-    // })
 }
 
 mount(document.getElementById('app'));

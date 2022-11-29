@@ -1,5 +1,4 @@
 import { m, onRemove } from 'closures';
-import cls from 'classies';
 
 export const TextInput = ({ placeholder, value, onInput }) => (
     m('input', {
@@ -41,11 +40,11 @@ export const Spinner = () => {
 export const UserCard = ({ profile, onClick, isStaged, showHeader }) => (
     m('article.card.-user', {
         onclick: profile.visible && onClick,
-        className: cls({
+        class: {
             '-staged': isStaged,
-            'clickable': onClick,
+            'clickable': profile.visible && onClick,
             'opacity-50': !profile.visible
-        })
+        }
     },
         showHeader &&
             m('header',
@@ -70,9 +69,9 @@ export const UserCard = ({ profile, onClick, isStaged, showHeader }) => (
     )
 );
 
-export const AppCard = ({ name, platforms, steam_appid, header_image }) => (
+export const AppCard = ({ key, name, platforms, steam_appid, header_image }) => (
     m('article.card.-app',
-        m('div.body',
+        m('div.body', { key },
             m('a.-neutral', {
                 href: `https://store.steampowered.com/app/${steam_appid}`
             },

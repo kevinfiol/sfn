@@ -8,7 +8,7 @@ export function query(
         initial = null,
         skip = false,
         params = {},
-        transformChain = defaultChain,
+        chain = defaultChain,
         end = noop
     } = {}
 ) {
@@ -27,11 +27,11 @@ export function query(
         });
     }
 
-    function runFetcher(params = {}, chain = defaultChain) {
+    function runFetcher(params = {}, callback = defaultChain) {
         loading(true);
         return fetcher(key, params)
             // transform data before saving in store
-            .then(transformChain)
+            .then(chain)
             // save data to store
             .then(x => {
                 data(x);
@@ -39,7 +39,7 @@ export function query(
             })
             // callback chain with new data
             .then(x => {
-                try { return chain(x); }
+                try { return callback(x); }
                 catch (e) { throw e; }
             })
             // save error to store
@@ -51,8 +51,8 @@ export function query(
             });
     }
 
-    let mutate = (params, optionalChain) =>
-        runFetcher(params, optionalChain);
+    let mutate = (params, callback) =>
+        runFetcher(params, callback);
 
     if (!skip) runFetcher(params);
     return { data, error, loading, once, mutate };

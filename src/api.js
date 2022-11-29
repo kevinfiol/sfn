@@ -13,7 +13,6 @@ function fetcher(url, params = {}) {
 
     return fetch(endpoint(url) + queryString)
         .then((res) => {
-            console.log(res);
             return res.json();
         })
         .then((res) => {

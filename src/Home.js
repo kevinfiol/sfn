@@ -3,7 +3,7 @@ import { TextInput, UserCard } from './components';
 import { queryCategories, queryCommonApps, queryFriends } from './api';
 import { or } from './query';
 
-export function Home({ actions, router }) {
+export default function Home({ actions, router }) {
     let steamid = '';
 
     const profiles = queryFriends();
@@ -24,18 +24,13 @@ export function Home({ actions, router }) {
         Promise.all([
             apps.mutate({ steamids: idString }),
             categories.mutate()
-        ]).then(console.log);
-
-        // await Promise.all([
-        //     apps.mutate({ steamids: idString }),
-        //     categories.mutate()
-        // ]);
-
-        // actions.setApps(apps.data(), categories.data());
-        // router.route('/' + idString);
+        ]).then(([apps, categories]) => {
+            actions.setApps(apps, categories);
+            router.route('/' + idString);
+        });
     }
 
-    return ({ state }) => { console.log(JSON.stringify(state.user));return [
+    return ({ state }) => [
         m('section',
             m('form.input-group', { onsubmit: onSubmit },
                 m(TextInput, {
@@ -92,5 +87,5 @@ export function Home({ actions, router }) {
                 }, 'Compare Libraries')
             )
         ,
-    ];}
+    ]
 }

@@ -1,5 +1,6 @@
-const State = (init = {}) => ({
-    route: { path: '/', params: {} },
+let $;
+
+const State = () => ({
     loading: false,
     user: null,
     friends: [],
@@ -7,13 +8,16 @@ const State = (init = {}) => ({
     stagedCount: 0,
     idString: '',
     apps: [],
-    categories: [],
-    ...init
+    categories: []
 });
 
 const Actions = (state) => ($ = {
-    setRoute: (path = '/', params = {}) => {
-        state.route = { path, params };
+    reset: () => {
+        let tmp = State();
+
+        for (let k in tmp) {
+            state[k] = tmp[k];
+        }
     },
 
     setLoading: (loading) => {

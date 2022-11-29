@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "node scripts/dev.js",
+    "dev": "node scripts/build.js -d",
     "build": "node scripts/build.js"
   },
   "engines": {
@@ -9,14 +9,12 @@
     "pnpm": "7.x"
   },
   "dependencies": {
-    "classies": "1.0.5",
-    "closures": "^0.7.6",
-    "mithril": "3.0.0-next.8",
+    "closures": "^0.7.11",
     "navaid": "^1.2.0"
   },
   "devDependencies": {
     "env-smart": "2.3.0",
-    "esbuild": "0.14.28",
+    "esbuild": "0.15.16",
     "servbot": "0.2.6"
   }
 }
