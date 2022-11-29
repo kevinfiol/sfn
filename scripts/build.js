@@ -36,7 +36,7 @@ function bundle(config = {}) {
     });
 }
 
-let config = {minify:false};
+let config = {};
 
 if (DEV) {
     const server = servbot({
