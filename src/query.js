@@ -1,11 +1,12 @@
-let noop = _ => {},
+let NIL = void 0,
+    noop = _ => {},
     defaultChain = x => x;
 
 export function query(
     key = '',
     fetcher,
     {
-        initial = null,
+        initial = NIL,
         skip = false,
         params = {},
         chain = defaultChain,
@@ -22,13 +23,14 @@ export function query(
             if (x) {
                 fn(x);
                 unsub && unsub();
-                unsub = void 0;
+                unsub = NIL;
             }
         });
     }
 
     function runFetcher(params = {}, callback = defaultChain) {
         loading(true);
+        error(NIL);
         return fetcher(key, params)
             // transform data before saving in store
             .then(chain)
