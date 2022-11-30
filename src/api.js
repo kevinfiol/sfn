@@ -20,8 +20,8 @@ function fetcher(url, params = {}) {
             return res.data[0];
         })
         .catch((e) => {
-            console.error(e);
-            return {};
+            // throw so query can save error to error store
+            throw e;
         });
 }
 
