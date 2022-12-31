@@ -1,5 +1,3 @@
-let $;
-
 const State = () => ({
     loading: false,
     user: null,
@@ -11,7 +9,7 @@ const State = () => ({
     categories: []
 });
 
-const Actions = (state) => ($ = {
+const Actions = (state, $) => ($ = {
     reset: () => {
         let tmp = State();
 
@@ -48,7 +46,7 @@ const Actions = (state) => ($ = {
         }
 
         // create CSV of profile identifiers
-        // e.g., `kebsteam,761237649,pizzuhbagel``
+        // e.g., `kebsteam,761237649,pizzuhbagel`
         state.idString = Object.values(state.staged)
             .map(profile => profile.identifier)
             .join(',');
