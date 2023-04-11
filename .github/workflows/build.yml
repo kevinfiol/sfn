@@ -7,6 +7,8 @@ on:
     inputs:
       tags:
         description: 'build tag'
+env:
+  API_URL: https://steam-api.deno.dev
 jobs:
   build-and-deploy:
     runs-on: ubuntu-20.04
@@ -19,7 +21,7 @@ jobs:
         run: |
           npm install -g pnpm
           pnpm install --no-optional
-          pnpm run build
+          API_URL=$API_URL pnpm run build
       - name: deploy
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
