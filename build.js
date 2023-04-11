@@ -21,7 +21,7 @@ const esbuildConfig = {
   entryPoints: [ENTRY],
   outfile: OUTFILE,
   bundle: true,
-  minify: !DEV,
+  minify: false,
   sourcemap: DEV,
   jsxFactory: 'm',
   jsxFragment: '"["',
@@ -45,25 +45,23 @@ const esbuildConfig = {
   }]
 };
 
-(async () => {
-  // create & configure context
-  const ctx = await esbuild.context(esbuildConfig);
+// create & configure context
+const ctx = await esbuild.context(esbuildConfig);
 
-  if (DEV) {
-    server = servbot({
-      root: 'dist',
-      reload: true,
-      fallback: 'index.html'
-    });
+if (DEV) {
+  server = servbot({
+    root: 'dist',
+    reload: true,
+    fallback: 'index.html'
+  });
 
-    server.listen(PORT);
-    await ctx.watch();
+  server.listen(PORT);
+  await ctx.watch();
 
-    process.on('exit', () => {
-      ctx.dispose();
-      server.close();
-    });
-  } else {
-    ctx.rebuild().finally(ctx.dispose);
-  }
-})();
+  process.on('exit', () => {
+    ctx.dispose();
+    server.close();
+  });
+} else {
+  ctx.rebuild().finally(ctx.dispose);
+}
