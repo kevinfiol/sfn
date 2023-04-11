@@ -1,11 +1,11 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "node scripts/build.js -d",
+    "dev": "node scripts/build.js --dev",
     "build": "node scripts/build.js"
   },
   "engines": {
-    "node": "16.x",
+    "node": "18.x",
     "pnpm": "7.x"
   },
   "dependencies": {
@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "env-smart": "2.3.0",
-    "esbuild": "0.15.16",
-    "servbot": "0.2.6"
+    "esbuild": "0.17.15",
+    "servbot": "^0.2.6"
   }
 }
