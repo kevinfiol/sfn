@@ -20,6 +20,7 @@
     --spacing-4: 1rem;
     --spacing-5: 1.25rem;
     --spacing-6: 2rem;
+    --spacing-7: 3rem;
 
     --size-1: 200px;
     --size-2: 250px;
@@ -287,6 +288,8 @@ button:not([disabled]):hover {
 .bottom-0 { bottom: 0; }
 .left-0 { left: 0; }
 .right-0 { right: 0; }
+
+.pb-7 { padding-bottom: var(--spacing-7); }
 
 /* app specific components */
 footer {

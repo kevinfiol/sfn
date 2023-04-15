@@ -59,7 +59,7 @@ export default function Home({ actions, router }) {
       })
     ),
 
-    state.user && state.friends.length > 0 && m('section',
+    state.user && state.friends.length > 0 && m('section.pb-7',
       m('hr'),
       m('h2', 'Friends'),
       m('div.grid.columns-200.gap-1',
