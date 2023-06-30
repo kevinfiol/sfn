@@ -21,7 +21,7 @@ const esbuildConfig = {
   entryPoints: [ENTRY],
   outfile: OUTFILE,
   bundle: true,
-  minify: false,
+  minify: true,
   sourcemap: DEV,
   jsxFactory: 'm',
   jsxFragment: '"["',
