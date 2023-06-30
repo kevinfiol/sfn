@@ -1,6 +1,6 @@
 # steam friend night
 
-A [closures](https://github.com/kevinfiol/closures) app to compare steam libraries with friends. The backend is [steam-api](https://github.com/kevinfiol/steam-api).
+An [umai](https://github.com/kevinfiol/umai) app to compare steam libraries with friends. The backend is [steam-api](https://github.com/kevinfiol/steam-api).
 
 ![screenshot](/screenshot.png)
 

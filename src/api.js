@@ -1,4 +1,4 @@
-import { redraw } from 'closures';
+import { redraw } from 'umai';
 import { query } from './query';
 
 const API_URL = process.env.API_URL;

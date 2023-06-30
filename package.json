@@ -9,7 +9,7 @@
     "pnpm": "8.x"
   },
   "dependencies": {
-    "closures": "^0.7.11",
+    "umai": "0.2.2",
     "navaid": "^1.2.0"
   },
   "devDependencies": {

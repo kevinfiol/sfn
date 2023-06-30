@@ -1,4 +1,4 @@
-import { m, onRemove } from 'closures';
+import { m } from 'umai';
 
 export const TextInput = ({ placeholder, value, onInput }) => (
   m('input', {
@@ -18,20 +18,22 @@ export const Spinner = () => {
   const steps = ['|', '/', '-', '\\', '|', '/', '-', '\\'];
   const len = steps.length;
 
-  onRemove(() => {
+  const onRemove = () => {
     if (el) el.innerText = '';
     clearInterval(timer);
-  });
+  };
 
   return () => (
     m('div.spinner', {
-      oncreate: (dom) => {
-        el = dom;
+      dom: (node) => {
+        el = node;
         timer = setInterval(() => {
           step += 1;
           if (step === len) step = 0;
-          dom.innerText = steps[step];
+          node.innerText = steps[step];
         }, MS);
+
+        return onRemove;
       }
     })
   );

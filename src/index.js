@@ -1,4 +1,4 @@
-import { m, app, redraw } from 'closures';
+import { m, mount, redraw } from 'umai';
 import navaid from 'navaid';
 import { State, Actions } from './state';
 import { Spinner } from './components';
@@ -10,7 +10,7 @@ let $page;
 
 function run(thunk, props) {
   return Promise.resolve(thunk).then((mod) => {
-    $page = m(mod.default || mod, props);
+    $page = () => m(mod.default || mod, props);
   }).then(redraw);
 }
 
@@ -21,19 +21,19 @@ const App = ({ state }) => (
     ,
 
     m('div.page', { class: { '-loading': state.loading } },
-      $page
+      m($page)
     )
   )
 );
 
-function mount(root) {
+function mountApp(root) {
   const router = navaid();
   const state = State();
   const actions = Actions(state);
 
   const ctx = { state, actions, router };
 
-  app(m(App, ctx), root);
+  mount(root, () => m(App, ctx));
 
   router
     .on(HOME.path, () => {
@@ -47,4 +47,4 @@ function mount(root) {
   router.listen();
 }
 
-mount(document.getElementById('app'));
+mountApp(document.getElementById('app'));

@@ -1,12 +1,12 @@
 lockfileVersion: '6.0'
 
 dependencies:
-  closures:
-    specifier: ^0.7.11
-    version: 0.7.11
   navaid:
     specifier: ^1.2.0
     version: 1.2.0
+  umai:
+    specifier: 0.2.2
+    version: 0.2.2
 
 devDependencies:
   env-smart:
@@ -219,11 +219,6 @@ packages:
     dev: true
     optional: true
 
-  /closures@0.7.11:
-    resolution: {integrity: sha512-ytL3dd6rpF/oJwuwVhqXnXizb8lIl8wVYkqmmdaLcB0Fv5Y1vjM0zbKcb780BAf4dxOmryTxKPbHytcPzD/KQQ==}
-    engines: {node: '>=12.x'}
-    dev: false
-
   /env-smart@2.3.0:
     resolution: {integrity: sha512-j0eY/A2+daENateYZA/W5aH1DTf3Ocuyg/x0utyowjlI8C3P/kXjBCIrL6FcGFJrTy3GlAfnN/5bpqfnhzYSuQ==}
     dev: true
@@ -274,3 +269,8 @@ packages:
     resolution: {integrity: sha512-55bZvh2CAEJwV7I2NvJZv+FWKD+3s5RqDpengAIUCQuUll64vymKSnGl2phoxZBBPJfS83Ttax5qTHaetboY7Q==}
     engines: {node: '>=12.x', pnpm: 7.x}
     dev: true
+
+  /umai@0.2.2:
+    resolution: {integrity: sha512-IyWXq+xdISVM/tm5fxCjdeK+Upq8l7GWud8jDvaBzVz4hKJeKL3mKvLlLFWzzjpQFBxJnNz9bAKkZPenbeUwhA==}
+    engines: {node: '>=12.x'}
+    dev: false
