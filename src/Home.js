@@ -44,11 +44,11 @@ export default function Home({ actions, router }) {
       ),
 
       profiles.error() && m('section',
-        m('div.error', 'Unable to retrieve profiles.')
+        m('div.error', 'Unable to retrieve profiles. Is your profile private?')
       ),
 
       apps.error() && m('section',
-        m('div.error', 'Unable to retrieve apps.')
+        m('div.error', 'Unable to retrieve apps. Is one of your friends\' profile private?')
       ),
 
       state.user && m('section',
