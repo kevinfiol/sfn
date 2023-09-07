@@ -1,57 +1,57 @@
-import { m } from 'umai';
-import { UserCard, AppCard, TextInput, CheckBox } from './components';
-import { queryProfiles, queryCommonApps, queryCategories } from './api';
-import { or } from './query';
+// import { m } from 'umai';
+// import { UserCard, AppCard, TextInput, CheckBox } from './components';
+// import { queryProfiles, queryCommonApps, queryCategories } from './api';
+// import { or } from './query';
 
-const MULTIPLAYER_CATEGORIES = [1, 9, 20, 27, 36, 38];
+// const MULTIPLAYER_CATEGORIES = [1, 9, 20, 27, 36, 38];
 
 export default function Apps({ state, actions, steamids }) {
   // on page change
   window.scroll(0, 0);
 
-  let textInput = '';
-  let checkedCategories = [];
-  let filtered = [];
-  let isExclusive = false;
+  // let textInput = '';
+  // let checkedCategories = [];
+  // let filtered = [];
+  // let isExclusive = false;
 
-  const profiles = queryProfiles(Object.values(state.staged), steamids);
-  const categories = queryCategories(state.categories);
-  const apps = queryCommonApps(state.apps, steamids);
+  // const profiles = queryProfiles(Object.values(state.staged), steamids);
+  // const categories = queryCategories(state.categories);
+  // const apps = queryCommonApps(state.apps, steamids);
 
-  // initialize filtered to initial apps data
-  apps.once((data) => filtered = data);
+  // // initialize filtered to initial apps data
+  // apps.once((data) => filtered = data);
 
-  const loading = or(profiles.loading, categories.loading, apps.loading);
-  const error = or(profiles.error, categories.error, apps.error);
+  // const loading = or(profiles.loading, categories.loading, apps.loading);
+  // const error = or(profiles.error, categories.error, apps.error);
 
-  // subscribe to loading store & update global state on changes
-  loading.sub(actions.setLoading);
+  // // subscribe to loading store & update global state on changes
+  // loading.sub(actions.setLoading);
 
-  function categoryFilter(app) {
-    if (!checkedCategories.length) return true;
+  // function categoryFilter(app) {
+  //   if (!checkedCategories.length) return true;
 
-    let include = isExclusive;
+  //   let include = isExclusive;
 
-    for (const cat of checkedCategories) {
-      if (!isExclusive) {
-        if (app.categoryMap[cat]) return true;
-      } else {
-        include = include && app.categoryMap[cat];
-      }
-    }
+  //   for (const cat of checkedCategories) {
+  //     if (!isExclusive) {
+  //       if (app.categoryMap[cat]) return true;
+  //     } else {
+  //       include = include && app.categoryMap[cat];
+  //     }
+  //   }
 
-    return include;
-  }
+  //   return include;
+  // }
 
-  function textFilter(app) {
-    const input = textInput.trim();
-    if (!input) return true;
-    return app.name.toLowerCase().indexOf(input.toLowerCase()) > -1;
-  }
+  // function textFilter(app) {
+  //   const input = textInput.trim();
+  //   if (!input) return true;
+  //   return app.name.toLowerCase().indexOf(input.toLowerCase()) > -1;
+  // }
 
-  function applyFilter(apps, filter) {
-    filtered = apps.filter(filter);
-  }
+  // function applyFilter(apps, filter) {
+  //   filtered = apps.filter(filter);
+  // }
 
   return () => (
     m('div',
