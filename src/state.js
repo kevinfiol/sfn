@@ -1,6 +1,7 @@
 const State = () => ({
   loading: false,
-  user: null,
+  error: undefined,
+  user: undefined,
   friends: [],
   staged: {},
   stagedCount: 0,
@@ -18,7 +19,12 @@ const Actions = (state, $) => ($ = {
     }
   },
 
+  setError: (error) => {
+    state.error = error;
+  },
+
   setLoading: (loading) => {
+    if (loading) state.error = undefined;
     state.loading = loading;
   },
 

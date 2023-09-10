@@ -98,11 +98,11 @@ export const AppCard = ({ key, name, platforms, steam_appid, header_image }) => 
 
 export const CheckBox = ({ name, value, checked, onChange }) => (
   m('div.checkbox', { className: checked ? '-selected' : '' },
-    m('label', { for: name },
+    m('label', { for: value },
       m('span.name', name),
       m('input', {
         type: 'checkbox',
-        id: name,
+        id: value,
         value,
         checked,
         onchange: ({ target }) => onChange(target.checked)

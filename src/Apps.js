@@ -1,70 +1,112 @@
-// import { m } from 'umai';
-// import { UserCard, AppCard, TextInput, CheckBox } from './components';
-// import { queryProfiles, queryCommonApps, queryCategories } from './api';
-// import { or } from './query';
+import { m, redraw } from 'umai';
+import { UserCard, AppCard, TextInput, CheckBox } from './components.js';
+import { getProfiles, getCategories, getCommonApps } from './api.js';
 
-// const MULTIPLAYER_CATEGORIES = [1, 9, 20, 27, 36, 38];
+const MULTIPLAYER_CATEGORIES = [1, 9, 20, 27, 36, 38];
+
+async function fetchPageData(steamids = '', stagedProfiles = {}) {
+  let error = undefined;
+  let data = {
+    profiles: [],
+    categories: [],
+    apps: []
+  };
+
+  const profileList = Object.values(stagedProfiles);
+  const profileData = profileList.length > 0
+    ? { data: profileList }
+    : undefined;
+
+  try {
+    const [profiles, categories, apps] = await Promise.all([
+      profileData || getProfiles(steamids),
+      getCategories(),
+      getCommonApps(steamids)
+    ]);
+
+    const error = profiles.error || categories.error || apps.error;
+    if (error) throw error;
+
+    data = {
+      profiles: profiles.data,
+      categories: categories.data,
+      apps: apps.data
+    };
+  } catch (e) {
+    console.error('Error fetching Apps page data: ', e);
+    error = e instanceof Error ? 'Unable to retrieve profile data' : e;
+  }
+
+  return { data, error };
+}
 
 export default function Apps({ state, actions, steamids }) {
   // on page change
   window.scroll(0, 0);
 
-  // let textInput = '';
-  // let checkedCategories = [];
-  // let filtered = [];
-  // let isExclusive = false;
+  let textInput = '';
+  let checkedCategories = [];
+  let filtered = [];
+  let isExclusive = false;
 
-  // const profiles = queryProfiles(Object.values(state.staged), steamids);
-  // const categories = queryCategories(state.categories);
-  // const apps = queryCommonApps(state.apps, steamids);
+  let profiles = [];
+  let categories = [];
+  let apps = [];
 
-  // // initialize filtered to initial apps data
-  // apps.once((data) => filtered = data);
+  actions.setLoading(true);
+  fetchPageData(steamids, state.staged)
+    .then(({ data, error }) => {
+      if (error) {
+        actions.setError(error);
+      } else {
+        profiles = data.profiles;
+        categories = data.categories;
+        filtered = apps = data.apps;
+      }
 
-  // const loading = or(profiles.loading, categories.loading, apps.loading);
-  // const error = or(profiles.error, categories.error, apps.error);
+      console.log(categories);
+      actions.setLoading(false);
+      redraw();
+    });
 
-  // // subscribe to loading store & update global state on changes
-  // loading.sub(actions.setLoading);
+  function categoryFilter(app) {
+    if (!checkedCategories.length) return true;
 
-  // function categoryFilter(app) {
-  //   if (!checkedCategories.length) return true;
+    let include = isExclusive;
 
-  //   let include = isExclusive;
+    for (const cat of checkedCategories) {
+      if (!isExclusive) {
+        if (app.categoryMap[cat]) return true;
+      } else {
+        include = include && app.categoryMap[cat];
+      }
+    }
 
-  //   for (const cat of checkedCategories) {
-  //     if (!isExclusive) {
-  //       if (app.categoryMap[cat]) return true;
-  //     } else {
-  //       include = include && app.categoryMap[cat];
-  //     }
-  //   }
+    return include;
+  }
 
-  //   return include;
-  // }
+  function textFilter(app) {
+    const input = textInput.trim();
+    if (!input) return true;
+    return app.name.toLowerCase().indexOf(input.toLowerCase()) > -1;
+  }
 
-  // function textFilter(app) {
-  //   const input = textInput.trim();
-  //   if (!input) return true;
-  //   return app.name.toLowerCase().indexOf(input.toLowerCase()) > -1;
-  // }
-
-  // function applyFilter(apps, filter) {
-  //   filtered = apps.filter(filter);
-  // }
+  function applyFilter(apps, filter) {
+    filtered = apps.filter(filter);
+  }
 
   return () => (
     m('div',
-      !loading() && error() &&
-        m('div.error', 'Unable to retrieve common apps.')
+      state.error &&
+        m('div.error', state.error)
       ,
 
-      !loading() && !error() && [
+      !state.loading && !state.error && [
         m('section',
           m('hr'),
           m('h2', 'Profiles'),
           m('div.grid.columns-200.gap-1',
-            profiles.data().map((profile) =>
+            profiles.map((profile) =>
               m(UserCard, {
                 profile,
                 showHeader: true
@@ -80,14 +122,14 @@ export default function Apps({ state, actions, steamids }) {
             m('button', {
               onclick: () => {
                 checkedCategories = [...MULTIPLAYER_CATEGORIES];
-                applyFilter(apps.data(), categoryFilter);
+                applyFilter(apps, categoryFilter);
               }
             }, 'Check Multiplayer Categories'),
 
             m('button', {
               onclick: () => {
                 checkedCategories = [];
-                applyFilter(apps.data(), categoryFilter);
+                applyFilter(apps, categoryFilter);
               }
             }, 'Uncheck All'),
 
@@ -97,12 +139,12 @@ export default function Apps({ state, actions, steamids }) {
               checked: isExclusive,
               onChange: (checked) => {
                 isExclusive = checked;
-                applyFilter(apps.data(), categoryFilter);
+                applyFilter(apps, categoryFilter);
               }
             })
           ),
           m('div.grid.columns-250.gap-1',
-            categories.data().map(([value, name]) =>
+            categories.map(([value, name]) =>
               m(CheckBox, {
                 name,
                 value,
@@ -115,7 +157,7 @@ export default function Apps({ state, actions, steamids }) {
                     if (~idx) checkedCategories.splice(idx, 1);
                   }
 
-                  applyFilter(apps.data(), categoryFilter);
+                  applyFilter(apps, categoryFilter);
                 }
               })
             )
@@ -130,7 +172,7 @@ export default function Apps({ state, actions, steamids }) {
             value: textInput,
             onInput: (v) => {
               textInput = v;
-              applyFilter(apps.data(), textFilter);
+              applyFilter(apps, textFilter);
             }
           }),
 

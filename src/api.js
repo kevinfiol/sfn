@@ -1,5 +1,4 @@
 import { redraw } from 'umai';
-// import { query } from './query';
 
 const API_URL = process.env.API_URL;
 const endpoint = (action) => `${API_URL}/${action}`;
@@ -22,69 +21,6 @@ function request(url, params = {}) {
     .finally(redraw);
 }
 
-// function fetcher(url, params = {}) {
-//   const queryString = Object.entries(params).reduce((a, [k, v]) => {
-//     if (!a) a += '?';
-//     a += `${k}=${v}`;
-//     return a;
-//   }, '');
-
-//   return fetch(endpoint(url) + queryString)
-//     .then((res) => {
-//       return res.json();
-//     })
-//     .then((res) => {
-//       if (res.error) throw res.error;
-//       return res.data[0];
-//     })
-//     .catch((e) => {
-//       // throw so query can save error to error store
-//       throw e;
-//     });
-// }
-
-// export function queryProfiles(staged, steamids) {
-//   const initial = staged || [];
-
-//   return query('getProfiles', fetcher, {
-//     initial,
-//     skip: initial.length || staged == undefined,
-//     chain: (data) => data.profiles,
-//     end: redraw,
-//     params: { steamids }
-//   });
-// }
-
-// export function queryCommonApps(apps, steamids) {
-//   const initial = apps || [];
-
-//   return query('getCommonApps', fetcher, {
-//     initial,
-//     skip: initial.length || apps == undefined,
-//     chain: (data) => data.apps,
-//     end: redraw,
-//     params: { steamids }
-//   });
-// }
-
-// export function queryCategories(categories) {
-//   const initial = categories || [];
-
-//   return query('getCategories', fetcher, {
-//     initial,
-//     skip: initial.length || categories == undefined,
-//     end: redraw,
-//   });
-// }
-
-// export function queryFriends() {
-//   return query('getFriends', fetcher, {
-//     initial: {},
-//     skip: true,
-//     end: redraw,
-//   });
-// }
-
 export async function getCategories() {
   let data = [], error = undefined;
 
@@ -102,9 +38,24 @@ export async function getCommonApps(steamids = '') {
   let data = [], error = undefined;
 
   try {
-    let res = await request('getCommonApps', { steamids });
+    const res = await request('getCommonApps', { steamids });
     if (res.apps) data = res.apps;
-    throw Error('Response did not contain apps');
+    else throw Error('Response did not contain apps');
+  } catch (e) {
+    console.error(e);
+    error = e;
+  }
+
+  return { data, error };
+}
+
+export async function getProfiles(steamids = '') {
+  let data = [], error = undefined;
+
+  try {
+    const res = await request('getProfiles', { steamids });
+    if (res.profiles) data = res.profiles;
+    else throw Error('Response did not contain profile data');
   } catch (e) {
     console.error(e);
     error = e;
