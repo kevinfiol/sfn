@@ -2,11 +2,15 @@ import { m } from 'umai';
 import { TextInput, UserCard } from './components.js';
 import { getFriends } from './api.js';
 
-export default function Home({ actions, router }) {
-  let steamid = '';
+export default function Search({ state, actions, router, steamids }) {
+  let steamid = steamids || '';
 
-  async function onSubmit(ev) {
-    ev.preventDefault();
+  if (steamids && !state.user) {
+    goToFriends();
+  }
+
+  async function goToFriends(ev) {
+    if (ev) ev.preventDefault();
 
     actions.setLoading(true);
     const { data, error } = await getFriends(steamid);
@@ -16,6 +20,7 @@ export default function Home({ actions, router }) {
       actions.setError('Unable to retrieve profiles. Is your profile private?');
     } else {
       actions.setProfiles(data);
+      router.route('/' + steamid);
       errorMsg = undefined;
     }
   }
@@ -27,7 +32,7 @@ export default function Home({ actions, router }) {
   return ({ state }) => (
     m('div',
       m('section',
-        m('form.input-group', { onsubmit: onSubmit },
+        m('form.input-group', { onsubmit: goToFriends },
           m(TextInput, {
             value: steamid,
             placeholder: 'enter steamid',

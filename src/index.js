@@ -3,8 +3,8 @@ import navaid from 'navaid';
 import { State, Actions } from './state';
 import { Spinner } from './components';
 
-const HOME = { path: '/', cmp: import('./Home.js') };
-const APPS = { path: '/:steamids', cmp: import('./Apps.js') };
+const SEARCH = import('./Search.js');
+const APPS = import('./Apps.js');
 
 let $page;
 
@@ -30,18 +30,21 @@ function mountApp(root) {
   const router = navaid();
   const state = State();
   const actions = Actions(state);
-
   const ctx = { state, actions, router };
 
   mount(root, () => m(App, ctx));
 
   router
-    .on(HOME.path, () => {
+    .on('/', () => {
       actions.reset();
-      run(HOME.cmp, ctx);
+      run(SEARCH, ctx);
     })
-    .on(APPS.path, (params) => {
-      run(APPS.cmp, { ...ctx, ...params })
+    .on('/:steamids', ({ steamids }) => {
+      const component = steamids && steamids.indexOf(',') > -1
+        ? APPS
+        : SEARCH;
+
+      run(component, { ...ctx, steamids });
     });
 
   router.listen();

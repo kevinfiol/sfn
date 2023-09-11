@@ -76,22 +76,3 @@ export async function getFriends(steamid = '') {
 
   return { data, error };
 }
-
-// export const radio = (defaults = {}) => {
-//   let state = {}, values = {};
-
-//   for (let k in defaults) {
-//     values[k] = defaults[k];
-//     Object.defineProperty(state, k, {
-//       enumerable: true,
-//       get: _ => values[k],
-//       set: value => {
-//         if (value === values[k]) return;
-//         for (let _k in defaults) values[_k] = defaults[_k];
-//         values[k] = value;
-//       }
-//     });
-//   }
-
-//   return Object.seal(state);
-// };
