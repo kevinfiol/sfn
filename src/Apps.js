@@ -64,7 +64,6 @@ export default function Apps({ state, actions, steamids }) {
         filtered = apps = data.apps;
       }
 
-      console.log(categories);
       actions.setLoading(false);
       redraw();
     });
