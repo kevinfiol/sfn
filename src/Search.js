@@ -21,7 +21,6 @@ export default function Search({ state, actions, router, steamids }) {
     } else {
       actions.setProfiles(data);
       router.route('/' + steamid);
-      errorMsg = undefined;
     }
   }
 
