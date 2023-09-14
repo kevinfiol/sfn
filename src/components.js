@@ -18,24 +18,22 @@ export const Spinner = () => {
   const steps = ['|', '/', '-', '\\', '|', '/', '-', '\\'];
   const len = steps.length;
 
-  const onRemove = () => {
-    if (el) el.innerText = '';
-    clearInterval(timer);
+  const onMount = (node) => {
+    el = node;
+    timer = setInterval(() => {
+      step += 1;
+      if (step === len) step = 0;
+      node.innerText = steps[step];
+    }, MS);
+
+    return () => {
+      if (el) el.innerText = '';
+      clearInterval(timer);
+    };
   };
 
   return () => (
-    m('div.spinner', {
-      dom: (node) => {
-        el = node;
-        timer = setInterval(() => {
-          step += 1;
-          if (step === len) step = 0;
-          node.innerText = steps[step];
-        }, MS);
-
-        return onRemove;
-      }
-    })
+    m('div.spinner', { dom: onMount })
   );
 };
 
