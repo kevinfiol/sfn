@@ -90,8 +90,10 @@ export default function Apps({ state, actions, steamids }) {
     return app.name.toLowerCase().indexOf(input.toLowerCase()) > -1;
   }
 
-  function applyFilter(apps, filter) {
-    filtered = apps.filter(filter);
+  function applyFilters() {
+    filtered = apps
+      .filter(categoryFilter)
+      .filter(textFilter);
   }
 
   return () => (
@@ -121,14 +123,14 @@ export default function Apps({ state, actions, steamids }) {
             m('button', {
               onclick: () => {
                 checkedCategories = [...MULTIPLAYER_CATEGORIES];
-                applyFilter(apps, categoryFilter);
+                applyFilters();
               }
             }, 'Check Multiplayer Categories'),
 
             m('button', {
               onclick: () => {
                 checkedCategories = [];
-                applyFilter(apps, categoryFilter);
+                applyFilters();
               }
             }, 'Uncheck All'),
 
@@ -138,7 +140,7 @@ export default function Apps({ state, actions, steamids }) {
               checked: isExclusive,
               onChange: (checked) => {
                 isExclusive = checked;
-                applyFilter(apps, categoryFilter);
+                applyFilters();
               }
             })
           ),
@@ -156,7 +158,7 @@ export default function Apps({ state, actions, steamids }) {
                     if (~idx) checkedCategories.splice(idx, 1);
                   }
 
-                  applyFilter(apps, categoryFilter);
+                  applyFilters();
                 }
               })
             )
@@ -171,7 +173,7 @@ export default function Apps({ state, actions, steamids }) {
             value: textInput,
             onInput: (v) => {
               textInput = v;
-              applyFilter(apps, textFilter);
+              applyFilters();
             }
           }),
 
