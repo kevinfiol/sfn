@@ -50,7 +50,7 @@ const ctx = await esbuild.context(esbuildConfig);
 if (DEV) {
   const servbot = await import('servbot');
 
-  server = servbot({
+  server = servbot.default({
     root: 'dist',
     reload: true,
     fallback: 'index.html'
