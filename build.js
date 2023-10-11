@@ -1,5 +1,4 @@
 import esbuild from 'esbuild';
-import servbot from 'servbot';
 import env from 'env-smart';
 import { resolve } from 'node:path';
 
@@ -49,6 +48,8 @@ const esbuildConfig = {
 const ctx = await esbuild.context(esbuildConfig);
 
 if (DEV) {
+  const servbot = await import('servbot');
+
   server = servbot({
     root: 'dist',
     reload: true,
