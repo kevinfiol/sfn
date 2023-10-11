@@ -6,6 +6,7 @@ on:
 env:
   SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
   SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+  API_URL: ${{ secrets.API_URL }}
 jobs:
   build-and-deploy:
     runs-on: ubuntu-22.04
