@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - master
+env:
+  SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+  SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
 jobs:
   build-and-deploy:
     runs-on: ubuntu-22.04
@@ -20,10 +23,6 @@ jobs:
           pnpm install --prod
           pnpm run build
       - name: deploy
-        with:
-          env:
-            SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
-            SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
         run: |
           pnpm install -g surge
           surge ./dist/ sfn.surge.sh
