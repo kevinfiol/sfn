@@ -1,6 +1,7 @@
 import esbuild from 'esbuild';
 import env from 'env-smart';
 import { resolve } from 'node:path';
+import { copyFile } from 'node:fs/promises';
 
 // load .env file
 env.load();
@@ -64,5 +65,7 @@ if (DEV) {
     server.close();
   });
 } else {
+  // copy index.html -> 200.html fallback for surge.sh SPA support
+  await copyFile(resolve('dist/index.html'), resolve('dist/200.html'));
   ctx.rebuild().finally(ctx.dispose);
 }

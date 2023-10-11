@@ -2,3 +2,4 @@ node_modules
 *.map
 .env
 dist/app.js
+dist/200.html
