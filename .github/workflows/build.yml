@@ -26,4 +26,4 @@ jobs:
       - name: deploy
         run: |
           pnpm install -g surge
-          surge ./dist/ sfn.surge.sh
+          surge ./dist/ sfn.sheev.net
