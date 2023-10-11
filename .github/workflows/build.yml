@@ -8,10 +8,14 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
       - uses: actions/setup-node@v3
         with:
           node-version: 18.15.0
-      - name: Install and Run Node Script
+          cache: 'pnpm'
+      - name: install and build
         run: |
           pnpm install --prod
           pnpm run build
@@ -21,4 +25,4 @@ jobs:
           single-commit: true
           git-config-email: <>
           branch: gh-pages
-          folder: output
+          folder: dist
