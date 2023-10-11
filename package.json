@@ -10,11 +10,11 @@
   },
   "dependencies": {
     "umai": "0.2.2",
-    "navaid": "^1.2.0"
+    "navaid": "^1.2.0",
+    "env-smart": "2.3.0",
+    "esbuild": "0.17.15"
   },
   "devDependencies": {
-    "env-smart": "2.3.0",
-    "esbuild": "0.17.15",
     "servbot": "^0.2.6"
   }
 }
