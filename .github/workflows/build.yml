@@ -21,16 +21,14 @@ jobs:
         with:
           node-version: 18.15.0
           cache: 'pnpm'
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: 1.36.1
       - name: install and build
         run: |
           pnpm install --prod
           pnpm run build
-      - uses: denoland/setup-deno@v1
-        with:
-          deno-version: 1.36.1
       - name: deploy
         run: |
-          # install deployctl
-          - deno install --allow-all --no-check https://deno.land/x/deploy@1.8.2/deployctl.ts
-          # deploy site as file server
-          - cd ./dist/ && deployctl deploy --project="$PROJECT_NAME" --prod https://deno.land/std@0.204.0/http/file_server.ts
+          deno install --allow-all --no-check https://deno.land/x/deploy@1.8.2/deployctl.ts
+          cd ./dist/ && deployctl deploy --project="$PROJECT_NAME" --prod https://deno.land/std@0.204.0/http/file_server.ts
