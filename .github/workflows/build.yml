@@ -4,6 +4,8 @@ on:
     branches:
       - master
 env:
+  PROJECT_NAME: sfn
+  DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
   SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
   SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
   API_URL: ${{ secrets.API_URL }}
@@ -25,5 +27,7 @@ jobs:
           pnpm run build
       - name: deploy
         run: |
-          pnpm install -g surge
-          surge ./dist/ sfn.surge.sh
+          # install deployctl
+          - deno install --allow-all --no-check https://deno.land/x/deploy@1.8.2/deployctl.ts
+          # deploy site as file server
+          - cd ./dist/ && deployctl deploy --project="$PROJECT_NAME" --prod https://deno.land/std@0.204.0/http/file_server.ts
