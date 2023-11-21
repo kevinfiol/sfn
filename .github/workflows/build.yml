@@ -6,8 +6,7 @@ on:
 env:
   PROJECT_NAME: sfn
   DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
-  SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
-  SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+  SPA_FALLBACK: /index.html
   API_URL: ${{ secrets.API_URL }}
 jobs:
   build-and-deploy:
@@ -31,4 +30,4 @@ jobs:
       - name: deploy
         run: |
           deno install --allow-all --no-check https://deno.land/x/deploy@1.8.2/deployctl.ts
-          cd ./dist/ && deployctl deploy --project="$PROJECT_NAME" --prod https://deno.land/std@0.204.0/http/file_server.ts
+          cd ./dist/ && deployctl deploy --project="$PROJECT_NAME" --prod https://deno.land/x/deploy_spa_serve@0.1.0/main.ts
