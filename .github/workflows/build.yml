@@ -6,7 +6,6 @@ on:
 env:
   PROJECT_NAME: sfn
   DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
-  SPA_FALLBACK: /index.html
   API_URL: ${{ secrets.API_URL }}
 jobs:
   build-and-deploy:
