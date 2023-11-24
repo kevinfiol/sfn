@@ -2,7 +2,7 @@ import { m, redraw } from 'umai';
 import { UserCard, AppCard, TextInput, CheckBox } from './components.js';
 import { getProfiles, getCategories, getCommonApps } from './api.js';
 
-const MULTIPLAYER_CATEGORIES = [1, 9, 20, 27, 36, 38];
+const MULTIPLAYER_CATEGORIES = ['1', '9', '20', '27', '36', '38'];
 
 async function fetchPageData(steamids = '', stagedProfiles = {}) {
   let error = undefined;
