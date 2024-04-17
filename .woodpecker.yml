@@ -1,0 +1,12 @@
+steps:
+- name: deploy site
+  image: docker.io/node:20-alpine3.19
+  secrets: [CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN, API_URL]
+  when:
+    - event: [push, manual]
+      branch: [master]
+  commands:
+    - npm install -g pnpm
+    - pnpm install --prod
+    - pnpm run build
+    - pnpm dlx cf-pages-cli --projectName=sfn --accountId=$CLOUDFLARE_ACCOUNT_ID ./dist
