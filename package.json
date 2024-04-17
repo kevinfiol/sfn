@@ -5,8 +5,8 @@
     "build": "node build.js"
   },
   "engines": {
-    "node": "18.x",
-    "pnpm": "8.x"
+    "node": "20.x",
+    "pnpm": "9.x"
   },
   "dependencies": {
     "umai": "0.2.2",
