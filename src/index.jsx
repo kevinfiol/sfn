@@ -41,7 +41,6 @@ function mountApp(root) {
     })
     .on("/:steamids", ({ steamids }) => {
       const component = steamids && steamids.indexOf(",") > -1 ? APPS : SEARCH;
-
       run(component, { ...ctx, steamids });
     });
 
