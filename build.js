@@ -5,9 +5,10 @@ const PORT = 8081;
 const DEV = process.argv.includes('--dev');
 const API_URL = process.env.API_URL;
 const OUTFILE = resolve('dist/app.js');
-const ENTRY = resolve('src/index.js');
+const ENTRY = resolve('src/index.jsx');
 
-console.log({API_URL});
+/** @type {import('servbot').ServbotServer?} **/
+let server;
 
 /** @type {esbuild.BuildOptions} **/
 const config = {
@@ -24,7 +25,10 @@ const config = {
     name: 'on-end',
     setup(build) {
       build.onEnd(({ errors }) => {
-        if (!errors.length) console.log('Bundled: ', OUTFILE);
+        if (!errors.length) {
+          console.log('Bundled: ', OUTFILE);
+          if (server) server.reload();
+        }
       });
     }
   }]
@@ -34,8 +38,7 @@ if (DEV) {
   const ctx = await esbuild.context(config);
   const servbot = await import('servbot');
 
-  /** @type {import('servbot').ServbotServer?} **/
-  const server = servbot.default({
+  server = servbot.default({
     root: 'dist',
     reload: true,
     fallback: 'index.html'

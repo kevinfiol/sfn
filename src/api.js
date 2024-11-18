@@ -1,13 +1,13 @@
-import { redraw } from 'umai';
+import { redraw } from "umai";
 
 const API_URL = process.env.API_URL;
 const endpoint = (action) => `${API_URL}/${action}`;
 
 function request(url, params = {}) {
-  let query = '';
+  let query = "";
 
   for (let k in params) {
-    if (!query) query = '?';
+    if (!query) query = "?";
     query += `${k}=${params[k]}`;
   }
 
@@ -22,10 +22,11 @@ function request(url, params = {}) {
 }
 
 export async function getCategories() {
-  let data = [], error = undefined;
+  let data = [],
+    error = undefined;
 
   try {
-    data = await request('getCategories');
+    data = await request("getCategories");
   } catch (e) {
     console.error(e);
     error = e;
@@ -34,13 +35,14 @@ export async function getCategories() {
   return { data, error };
 }
 
-export async function getCommonApps(steamids = '') {
-  let data = [], error = undefined;
+export async function getCommonApps(steamids = "") {
+  let data = [],
+    error = undefined;
 
   try {
-    const res = await request('getCommonApps', { steamids });
+    const res = await request("getCommonApps", { steamids });
     if (res.apps) data = res.apps;
-    else throw Error('Response did not contain apps');
+    else throw Error("Response did not contain apps");
   } catch (e) {
     console.error(e);
     error = e;
@@ -49,13 +51,14 @@ export async function getCommonApps(steamids = '') {
   return { data, error };
 }
 
-export async function getProfiles(steamids = '') {
-  let data = [], error = undefined;
+export async function getProfiles(steamids = "") {
+  let data = [],
+    error = undefined;
 
   try {
-    const res = await request('getProfiles', { steamids });
+    const res = await request("getProfiles", { steamids });
     if (res.profiles) data = res.profiles;
-    else throw Error('Response did not contain profile data');
+    else throw Error("Response did not contain profile data");
   } catch (e) {
     console.error(e);
     error = e;
@@ -64,11 +67,12 @@ export async function getProfiles(steamids = '') {
   return { data, error };
 }
 
-export async function getFriends(steamid = '') {
-  let data = [], error = undefined;
+export async function getFriends(steamid = "") {
+  let data = [],
+    error = undefined;
 
   try {
-    data = await request('getFriends', { steamid });
+    data = await request("getFriends", { steamid });
   } catch (e) {
     console.error(e);
     error = e;
