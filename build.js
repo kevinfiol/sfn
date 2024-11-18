@@ -1,10 +1,5 @@
 import esbuild from 'esbuild';
-import env from 'env-smart';
 import { resolve } from 'node:path';
-import { copyFile } from 'node:fs/promises';
-
-// load .env file
-env.load();
 
 const PORT = 8081;
 const DEV = process.argv.includes('--dev');
@@ -12,12 +7,11 @@ const API_URL = process.env.API_URL;
 const OUTFILE = resolve('dist/app.js');
 const ENTRY = resolve('src/index.js');
 
-/** @type {import('servbot').ServbotServer?} **/
-let server;
+console.log({API_URL});
 
 /** @type {esbuild.BuildOptions} **/
-const esbuildConfig = {
-  format: 'iife',
+const config = {
+  format: 'esm',
   entryPoints: [ENTRY],
   outfile: OUTFILE,
   bundle: true,
@@ -25,33 +19,23 @@ const esbuildConfig = {
   sourcemap: DEV,
   jsxFactory: 'm',
   jsxFragment: '"["',
-  define: {
-    'process.env.API_URL': `"${API_URL}"`,
-    'window.DEV_MODE': DEV ? 'true' : 'false'
-  },
+  define: { 'process.env.API_URL': `"${API_URL}"` },
   plugins: [{
     name: 'on-end',
     setup(build) {
       build.onEnd(({ errors }) => {
-        if (errors[0]) {
-          console.error('Bundling Failed!', errors[0]);
-          return;
-        }
-
-        console.log('Bundled: ', OUTFILE);
-        if (server) server.reload();
+        if (!errors.length) console.log('Bundled: ', OUTFILE);
       });
     }
   }]
 };
 
-// create & configure context
-const ctx = await esbuild.context(esbuildConfig);
-
 if (DEV) {
+  const ctx = await esbuild.context(config);
   const servbot = await import('servbot');
 
-  server = servbot.default({
+  /** @type {import('servbot').ServbotServer?} **/
+  const server = servbot.default({
     root: 'dist',
     reload: true,
     fallback: 'index.html'
@@ -65,7 +49,5 @@ if (DEV) {
     server.close();
   });
 } else {
-  // copy index.html -> 200.html fallback for surge.sh SPA support
-  await copyFile(resolve('dist/index.html'), resolve('dist/200.html'));
-  ctx.rebuild().finally(ctx.dispose);
+  await esbuild.build(config);
 }

@@ -1,0 +1,38 @@
+name: deploy sfn
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  API_URL: ${{ secrets.API_URL }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: install pnpm
+        run: npm install -g pnpm
+
+      - name: install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install --prod
+
+      - name: build project
+        run: pnpm build
+
+      - name: deploy
+        run: pnpm dlx cf-pages-cli --projectName=sfn --accountId=$CLOUDFLARE_ACCOUNT_ID ./dist

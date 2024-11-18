@@ -1,18 +1,17 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "node build.js --dev",
-    "build": "node build.js"
+    "dev": "node --env-file=.env build.js --dev",
+    "build": "node --env-file=.env build.js"
   },
   "engines": {
-    "node": "20.x",
+    "node": "22.x",
     "pnpm": "9.x"
   },
   "dependencies": {
-    "umai": "0.2.2",
+    "esbuild": "^0.24.0",
     "navaid": "^1.2.0",
-    "env-smart": "2.3.0",
-    "esbuild": "0.17.15"
+    "umai": "^0.4.0"
   },
   "devDependencies": {
     "servbot": "^0.2.6"
