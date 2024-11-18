@@ -2,7 +2,7 @@
   "type": "module",
   "scripts": {
     "dev": "node --env-file=.env build.js --dev",
-    "build": "node --env-file=.env build.js"
+    "build": "node --env-file-if-exists=.env build.js"
   },
   "engines": {
     "node": "22.x",
